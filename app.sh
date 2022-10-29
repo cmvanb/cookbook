@@ -1,4 +1,4 @@
 #!/bin/bash
 
 export FLASK_APP=app.py
-flask run
+flask run --reload --debugger
