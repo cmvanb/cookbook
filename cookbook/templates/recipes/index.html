@@ -5,12 +5,14 @@
     {% if g.user %}
         <a class="action" href="{{ url_for('recipes.add') }}">Add Recipe</a>
     {% endif %}
+    <input type="search" id="search" name="search" placeholder="Search">
 {% endblock %}
 
 {% block content %}
     {% for recipe in recipes %}
         <article>
             <header>
+                <img src="{{ url_for('static', filename=recipe['image_path']) }}">
                 <div>
                     <h3>{{ recipe['title'] }}</h3>
                     <div>{{ recipe['created'].strftime('%Y-%m-%d') }}</div>

@@ -1,10 +1,22 @@
+import os
+import uuid
+
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, current_app, flash, g, redirect, render_template, request, url_for, session
     )
 from werkzeug.exceptions import abort
+from werkzeug.utils import secure_filename
 
 from cookbook.auth import login_required
 from cookbook.db import get_db
+
+# TODO: Extract to utility?
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+def file_allowed(file):
+    return file.mimetype[0:5] == 'image' \
+           and '.' in file.filename \
+           and file.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 bp = Blueprint('recipes', __name__, url_prefix='/recipes')
 
@@ -12,32 +24,77 @@ bp = Blueprint('recipes', __name__, url_prefix='/recipes')
 @login_required
 def index():
     db = get_db()
-    recipes = db.execute(
-        'SELECT r.id, title, created, description, user_id'
-        ' FROM recipe r JOIN user u ON r.user_id = u.id'
-        ' ORDER BY title DESC'
-        ).fetchall()
+    sql = """
+        SELECT r.id, title, created, description, image_path, user_id
+        FROM recipe r WHERE r.user_id = ?
+        ORDER BY title ASC
+        """
+    args = (session['user_id'], )
+    recipes = db.execute(sql, args).fetchall()
     return render_template('recipes/index.html', recipes=recipes)
 
 @bp.route('/add', methods=('GET', 'POST'))
 @login_required
 def add():
     if request.method == 'POST':
-        title = request.form['title']
-        description = request.form['description']
         error = None
+
+        title = request.form['title']
+        author = request.form['author']
+        description = request.form['description']
+        source_url = request.form['source_url']
+        servings = request.form['servings']
+        image_path = None
+        prep_time = request.form['prep_time']
+        cook_time = request.form['cook_time']
+        instructions = request.form['instructions']
+        # TODO: Tags and ingredients.
+
+        image = request.files['image']
+        if image is not None:
+            if image.filename == '':
+                error = 'Non-existent image was selected.'
+            elif not file_allowed(image):
+                error = 'Image format not allowed.'
+            else:
+                filename = str(uuid.uuid4())
+                # filename = secure_filename(image.filename)
+
+                # Save image to disk.
+                image.save(os.path.join(current_app.static_folder, 'user_images', filename))
+
+                # Store relative path in database.
+                image_path = os.path.join('user_images', filename)
+        else:
+            error = 'Image not in request.'
 
         if not title:
             error = 'Title is required.'
+        elif not author:
+            error = 'Author is required.'
+        elif not description:
+            error = 'Description is required.'
+        elif not source_url:
+            error = 'Source URL is required.'
+        elif image_path == None:
+            error = 'Image could not be uploaded.'
+        elif not servings:
+            error = 'Servings is required.'
+        elif not prep_time:
+            error = 'Prep Time is required.'
+        elif not cook_time:
+            error = 'Cook Time is required.'
+        elif not instructions:
+            error = 'Instructions is required.'
 
         if error is not None:
             flash(error)
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO recipe (user_id, title, description)'
-                ' VALUES (?, ?, ?)',
-                (g.user['id'], title, description)
+                'INSERT INTO recipe (user_id, title, author, description, source_url, image_path, servings, prep_time, cook_time, instructions)'
+                ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                (g.user['id'], title, author, description, source_url, image_path, servings, prep_time, cook_time, instructions)
                 )
             db.commit()
             return redirect(url_for('recipes.index'))

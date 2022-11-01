@@ -5,12 +5,35 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post">
+    <form method="post" enctype=multipart/form-data>
         <label for="title">Title</label>
         <input name="title" id="title" value="{{ request.form['title'] }}" required>
 
+        <label for="author">Author</label>
+        <input name="author" id="author" value="{{ request.form['author'] }}" required>
+
         <label for="description">Description</label>
-        <textarea name="description" id="description">{{ request.form['description'] }}</textarea>
+        <input name="description" id="description" value="{{ request.form['description'] }}" required>
+
+        <label for="source_url">Source URL</label>
+        <input name="source_url" id="source_url" value="{{ request.form['source_url'] }}" required>
+
+        <label for="image">Image</label>
+        <input type="file" name="image" id="image" value="{{ request.form['image'] }}" required>
+
+        <label for="servings">Servings</label>
+        <input name="servings" id="servings" value="{{ request.form['servings'] }}" required>
+
+        <label for="prep_time">Prep Time</label>
+        <input name="prep_time" id="prep_time" value="{{ request.form['prep_time'] }}" required>
+
+        <label for="cook_time">Cook Time</label>
+        <input name="cook_time" id="cook_time" value="{{ request.form['cook_time'] }}" required>
+
+        <label for="instructions">Instructions</label>
+        <input name="instructions" id="instructions" value="{{ request.form['instructions'] }}" required>
+
+        <!-- TODO: Tags and ingredients. -->
 
         <input type="submit" value="Save">
     </form>
