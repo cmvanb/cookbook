@@ -1,23 +1,30 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <h1>{% block title %}Register{% endblock %}</h1>
+    <h3>{% block title %}Register{% endblock %}</h3>
 {% endblock %}
 
 {% block content %}
     <article>
         <form method="post">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Email address" required>
+            <div class="field label border">
+                <input type="email" id="email" name="email" required>
+                <label for="email">Email address</label>
+            </div>
 
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Password" required>
+            <div class="field label border">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
 
-            <label for="display_name">Display name</label>
-            <input type="text" id="display_name" name="display_name" placeholder="Display name" required>
-            <small>This is how we address you. You can change this later. Most people use their first name.</small>
+            <div class="field label border">
+                <label for="display_name">Display name</label>
+                <input type="text" id="display_name" name="display_name" required>
+                <span class="helper">This is how we address you. You can change this later. Most people use their first name.</span>
+            </div>
+            <button type="submit" value="Register">Register</button>
 
-            <input type="submit" value="Register">
+            <!-- <input type="submit" value="Register"> -->
         </form>
     </article>
 {% endblock %}

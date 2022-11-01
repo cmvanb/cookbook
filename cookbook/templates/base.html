@@ -3,23 +3,33 @@
 <head>
     <title>{% block title %}{% endblock %} - Cookbook</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pico.css') }}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='pico.css') }}"> -->
+    <link href="https://cdn.jsdelivr.net/npm/beercss@2.3.0/dist/cdn/beer.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/beercss@2.3.0/dist/cdn/beer.min.js" type="text/javascript"></script>
 </head>
 <body>
-    <main class="container">
+    <header>
         <nav>
-            <h5>Cookbook</h5>
-                
+            <button class="circle transparent">
+                <i>menu</i>
+            </button>
+            {% if g.user %}
+                <h5 class="max center-align">{{ g.user['display_name'] }}'s Cookbook</h5>
+            {% else %}
+                <h5 class="max center-align">Cookbook</h5>
+            {% endif %}
             <ul>
                 {% if g.user %}
-                <li><span>{{ g.user['email'] }}</span></li>
-                <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                    <li><span>{{ g.user['email'] }}</span></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
                 {% else %}
-                <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
                 {% endif %}
             </ul>
         </nav>
+    </header>
+    <main class="responsive">
         <section class="content">
             <header>
                 {% block header %}{% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <h1>{% block title %}{{ g.user['display_name'] }}'s Recipes{% endblock %}</h1>
+    <h3>{% block title %}Recipes{% endblock %}</h3>
     {% if g.user %}
         <a class="action" href="{{ url_for('recipes.add') }}">Add Recipe</a>
     {% endif %}
@@ -9,20 +9,17 @@
 {% endblock %}
 
 {% block content %}
-    {% for recipe in recipes %}
-        <article>
-            <header>
-                <img src="{{ url_for('static', filename=recipe['image_path']) }}">
-                <div>
-                    <h3>{{ recipe['title'] }}</h3>
-                    <div>{{ recipe['created'].strftime('%Y-%m-%d') }}</div>
+    <div class="grid">
+        {% for recipe in recipes %}
+            <article class="no-padding s12 m6 l3">
+                <img class="responsive small" src="{{ url_for('static', filename=recipe['image_path']) }}">
+                <div class="padding">
+                    <h5>{{ recipe['title'] }}</h5>
+                    <p>{{ recipe['created'].strftime('%Y-%m-%d') }}</p>
+                    <p>{{ recipe['description'] }}</p>
                 </div>
-            </header>
-            <p>{{ recipe['description'] }}</p>
-        </article>
-        {% if not loop.last %}
-            <hr>
-        {% endif %}
-    {% endfor %}
+            </article>
+        {% endfor %}
+    </div>
 {% endblock %}
 
