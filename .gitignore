@@ -1,6 +1,12 @@
+# Python litter.
 __pycache__/
 
+# User uploaded images.
+cookbook/static/user_images
+
+# Flask instance (database).
 instance/
 
+# Virtual environment.
 venv/
 
