@@ -3,14 +3,14 @@
 <head>
     <title>{% block title %}{% endblock %} - Cookbook</title>
     <meta charset="UTF-8">
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='pico.css') }}"> -->
     <link href="https://cdn.jsdelivr.net/npm/beercss@2.3.0/dist/cdn/beer.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/beercss@2.3.0/dist/cdn/beer.min.js" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='main.js') }}" type="text/javascript"></script>
 </head>
 <body>
     <header>
         <nav>
-            <button class="circle transparent">
+            <button class="circle transparent" id="modal_menu_button">
                 <i>menu</i>
             </button>
             {% if g.user %}
@@ -18,17 +18,52 @@
             {% else %}
                 <h5 class="max center-align">Cookbook</h5>
             {% endif %}
-            <ul>
-                {% if g.user %}
-                    <li><span>{{ g.user['email'] }}</span></li>
-                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
-                {% endif %}
-            </ul>
+            <i>menu_book</i>
         </nav>
     </header>
+    <div class="modal left" id="modal_menu">
+        <header class="fixed">
+            <nav>
+                <button class="transparent circle" id="close_modal_menu_button">
+                    <i>close</i>
+                </button>
+                <h5 class="max">Cookbook</h5>
+            </nav>
+        </header>
+        {% if g.user %}
+            <!-- TODO: Disable this. -->
+            <a class="row">
+                <i>calendar_month</i>
+                <span>Meal Planner</span>
+            </a>
+            <a class="row">
+                <i>menu_book</i>
+                <span>Recipes</span>
+            </a>
+            <a class="row">
+                <i>settings</i>
+                <span>Settings</span>
+            </a>
+            <div class="small-divider"></div>
+            <a class="row">
+                <i>account_circle</i>
+                <span>{{ g.user['email'] }}</span>
+            </a>
+            <a class="row" href="{{ url_for('auth.logout') }}">
+                <i>logout</i>
+                <span>Log Out</span>
+            </a>
+        {% else %}
+            <a class="row" href="{{ url_for('auth.register') }}">
+                <i>app_registration</i>
+                <span>Register</span>
+            </a>
+            <a class="row" href="{{ url_for('auth.login') }}">
+                <i>login</i>
+                <span>Log In</span>
+            </a>
+        {% endif %}
+    </div>
     <main class="responsive">
         <section class="content">
             <header>
@@ -36,6 +71,10 @@
             </header>
             {% for message in get_flashed_messages() %}
                 <mark>{{ message }}</mark>
+                <div class="toast error white-text top active">
+                    <i>error</i>
+                    <span>{{ message }}</span>
+                </div>
             {% endfor %}
             {% block content %}{% endblock %}
         </section>
