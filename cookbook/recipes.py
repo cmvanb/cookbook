@@ -25,7 +25,7 @@ bp = Blueprint('recipes', __name__, url_prefix='/recipes')
 def index():
     db = get_db()
     sql = """
-        SELECT r.id, title, created, description, image_path, user_id
+        SELECT r.id, user_id, created, title, description, image_path
         FROM recipe r WHERE r.user_id = ?
         ORDER BY title ASC
         """
@@ -48,7 +48,8 @@ def add():
         prep_time = request.form['prep_time']
         cook_time = request.form['cook_time']
         instructions = request.form['instructions']
-        # TODO: Tags and ingredients.
+
+        # TODO: POST tags and ingredients.
 
         image = request.files['image']
         if image is not None:
@@ -67,6 +68,14 @@ def add():
                 image_path = os.path.join('user_images', filename)
         else:
             error = 'Image not in request.'
+
+        # TODO: Perform validation on:
+        # Source URL
+        # Servings
+        # Prep Time
+        # Cook Time
+        # Tags
+        # Ingredients
 
         if not title:
             error = 'Title is required.'
@@ -91,13 +100,43 @@ def add():
             flash(error)
         else:
             db = get_db()
-            db.execute(
-                'INSERT INTO recipe (user_id, title, author, description, source_url, image_path, servings, prep_time, cook_time, instructions)'
-                ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                (g.user['id'], title, author, description, source_url, image_path, servings, prep_time, cook_time, instructions)
-                )
+            sql = """
+                INSERT INTO recipe (
+                    user_id, title, author, description,  source_url,
+                    image_path, servings, prep_time,  cook_time, instructions)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """
+            args = (g.user['id'], title, author, description, source_url,
+                image_path, servings, prep_time, cook_time, instructions)
+            recipe = db.execute(sql, args).fetchone()
             db.commit()
-            return redirect(url_for('recipes.index'))
+            return redirect(url_for('recipes.view', id=recipe['id']))
 
     return render_template('recipes/add.html')
 
+def get_recipe(id):
+    db = get_db()
+    sql = """
+        SELECT
+            r.id, user_id, created, title, author, description, source_url,
+            image_path, servings, prep_time, cook_time, instructions
+        FROM recipe r
+        WHERE r.id = ? AND r.user_id = ?
+    """
+    args = (id, session['user_id'])
+    recipe = db.execute(sql, args).fetchone()
+
+    if recipe is None:
+        abort(404, f"Recipe id {id} does not exist.")
+
+    # NOTE: SQL shouldn't return recipe that doesn't belong to user, this is defensive.
+    if recipe['user_id'] != g.user['id']:
+        abort(403)
+
+    return recipe
+
+@bp.route('/view/<int:id>')
+@login_required
+def view(id):
+    recipe = get_recipe(id)
+    return render_template('recipes/view.html', recipe=recipe)

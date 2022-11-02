@@ -8,7 +8,7 @@
             <input type="search" id="search" name="search">
             <label>Search</label>
         </div>
-        <button href="{{ url_for('recipes.add') }}">
+        <button onclick="location.href='{{ url_for('recipes.add') }}'">
             <i>add</i>
             Add Recipe
         </button>
@@ -16,13 +16,13 @@
 {% endblock %}
 
 {% block content %}
-    <div class="grid">
+    <div class="grid main-grid">
         {% for recipe in recipes %}
             <article class="no-padding s12 m6 l3">
                 <img class="responsive small" src="{{ url_for('static', filename=recipe['image_path']) }}">
                 <div class="padding">
-                    <h5>{{ recipe['title'] }}</h5>
-                    <p>{{ recipe['created'].strftime('%Y-%m-%d') }}</p>
+                    <h5><a href="{{ url_for('recipes.view', id=recipe['id']) }}">{{ recipe['title'] }}</a></h5>
+                    <!-- <p>{{ recipe['created'].strftime('%Y-%m-%d') }}</p> -->
                     <p>{{ recipe['description'] }}</p>
                 </div>
             </article>

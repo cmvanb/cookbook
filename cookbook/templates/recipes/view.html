@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h3>{% block title %}{{ recipe['title'] }}{% endblock %}</h3>
+{% endblock %}
+
+{% block content %}
+    <article>
+        <img class="responsive recipe-image" src="{{ url_for('static', filename=recipe['image_path']) }}">
+        
+        <div class="grid">
+            <div class="s6">
+                <p>{{ recipe['description'] }}</p>
+                <p>Lorem ipsum dolor sit amet, officia excepteur ex fugiat reprehenderit enim labore culpa sint ad nisi Lorem pariatur mollit ex esse exercitation amet. Nisi anim cupidatat excepteur officia. Reprehenderit nostrud nostrud ipsum Lorem est aliquip amet voluptate voluptate dolor minim nulla est proident. Nostrud officia pariatur ut officia. Sit irure elit esse ea nulla sunt ex occaecat reprehenderit commodo officia dolor Lorem duis laboris cupidatat officia voluptate. Culpa proident adipisicing id nulla nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua reprehenderit commodo ex non excepteur duis sunt velit enim. Voluptate laboris sint cupidatat ullamco ut ea consectetur et est culpa et culpa duis.</p>
+            </div>
+            <div class="s6">
+                <table class="border fill">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label>Author</label>
+                            </td>
+                            <td>{{ recipe['author'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Source URL</label>
+                            </td>
+                            <td>{{ recipe['source_url'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Servings</label>
+                            </td>
+                            <td>{{ recipe['servings'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Prep Time</label>
+                            </td>
+                            <td>{{ recipe['prep_time'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Cook Time</label>
+                            </td>
+                            <td>{{ recipe['cook_time'] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="s6">
+                <h6>Ingredients</h6>
+                <ul>
+                    <li>
+                <div class="row">
+                    <div class="max">
+                        <p>Garlic</p>
+                        <p>4 cloves</p>
+                    </div>
+                </div>
+                    </li>
+                    <li>
+                <div class="row">
+                    <div class="max">
+                        <p>Garlic</p>
+                        <p>4 cloves</p>
+                    </div>
+                </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="s6">
+                <h6>Instructions</h6>
+                <p>{{ recipe['instructions'] }}</p>
+            </div>
+        </div>
+    </article>
+{% endblock %}
+

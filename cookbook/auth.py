@@ -66,6 +66,8 @@ def login():
             return redirect(url_for('recipes.index'))
 
         flash(error)
+    elif g.user is not None:
+        return redirect(url_for('recipes.index'))
 
     return render_template('auth/login.html')
 
