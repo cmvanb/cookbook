@@ -12,7 +12,7 @@
 </head>
 <body>
     <!-- App bar -->
-    <header>
+    <header class="responsive fixed primary">
         <nav>
             <button class="circle transparent" id="modal_menu_button">
                 <i>menu</i>
@@ -70,7 +70,7 @@
         {% endif %}
     </div>
     <!-- Page content -->
-    <main class="responsive">
+    <main class="responsive" id="main-content">
         <header>
             {% block header %}{% endblock %}
         </header>
