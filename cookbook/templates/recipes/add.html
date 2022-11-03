@@ -15,36 +15,43 @@
             <div class="field label border">
                 <label for="author">Author</label>
                 <input name="author" id="author" value="{{ request.form['author'] }}" required>
+                <span class="helper">Optional. Defaults to {{ g.user['display_name'] }}.</span>
             </div>
 
             <div class="field label border">
                 <label for="description">Description</label>
                 <input name="description" id="description" value="{{ request.form['description'] }}" required>
+                <span class="helper">Optional.</span>
             </div>
 
             <div class="field label border">
                 <label for="source_url">Source URL</label>
                 <input name="source_url" id="source_url" value="{{ request.form['source_url'] }}" required>
+                <span class="helper">Optional.</span>
             </div>
 
-            <div class="field label border">
-                <label for="image">Image</label>
+            <div class="field label prefix border">
+                <i>attach_file</i>
+                <input type="text">
                 <input type="file" name="image" id="image" value="{{ request.form['image'] }}" required>
+                <label class="active">Image</label>
             </div>
 
             <div class="field label border">
                 <label for="servings">Servings</label>
-                <input name="servings" id="servings" value="{{ request.form['servings'] }}" required>
+                <input type="number" name="servings" id="servings" value="{{ request.form['servings'] }}" required>
             </div>
 
             <div class="field label border">
                 <label for="prep_time">Prep Time</label>
-                <input name="prep_time" id="prep_time" value="{{ request.form['prep_time'] }}" required>
+                <input type="number" name="prep_time" id="prep_time" value="{{ request.form['prep_time'] }}" required>
+                <span class="helper">Optional. Enter a value in minutes.</span>
             </div>
 
             <div class="field label border">
                 <label for="cook_time">Cook Time</label>
-                <input name="cook_time" id="cook_time" value="{{ request.form['cook_time'] }}" required>
+                <input type="number" name="cook_time" id="cook_time" value="{{ request.form['cook_time'] }}" required>
+                <span class="helper">Optional. Enter a value in minutes.</span>
             </div>
 
             <div class="field label border">
@@ -58,7 +65,7 @@
             <button
                 value="Cancel"
                 onclick="location.href='{{ url_for('recipes.index') }}'"
-                class="secondary"
+                class="border"
             >
                 Cancel
             </button>

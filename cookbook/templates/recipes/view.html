@@ -6,35 +6,40 @@
 
 {% block content %}
     <article class="medium-elevate">
+        <button class="background round square" id="close-recipe-button" onclick="location.href='{{ url_for('recipes.index') }}'">
+            <i>close</i>
+        </button>
         <div id="view-recipe-header">
             <img class="responsive" id="view-recipe-image" src="{{ url_for('static', filename=recipe['image_path']) }}">
             
-            <hgroup class="responsive" id="view-recipe-info">
+            <div id="view-recipe-info">
                 <h4>{% block title %}{{ recipe['title'] }}{% endblock %}</h4>
                 <p>by {{ recipe['author'] }}</p>
                 <a class="link" href="{{ recipe['source_url'] }}">{{ recipe['source_url'] }}</a>
-                <div class="small-space"></div>
-                <div id="view-recipe-attr" class="middle-align">
-                    <i id="view-recipe-attr-icon" class="small">schedule</i>
-                    <span>Prep: {{ recipe['prep_time'] }} mins</span>
+                <div class="row">
+                    <div id="view-recipe-attr" class="middle-align">
+                        <i id="view-recipe-attr-icon" class="small">schedule</i>
+                        <span>Prep: {{ recipe['prep_time'] }} mins</span>
+                    </div>
+                    <div id="view-recipe-attr" class="middle-align">
+                        <i id="view-recipe-attr-icon" class="small">schedule</i>
+                        <span>Cook: {{ recipe['cook_time'] }} mins</span>
+                    </div>
                 </div>
-                <div id="view-recipe-attr" class="middle-align">
-                    <i id="view-recipe-attr-icon" class="small">schedule</i>
-                    <span>Cook: {{ recipe['cook_time'] }} mins</span>
-                </div>
-                <div class="small-space"></div>
                 <p>{{ recipe['description'] }}</p>
-            </hgroup>
+            </div>
         </div>
         <div class="row">
             <button>
                 <i>edit</i>
                 Edit Recipe
             </button>
-            <button class="border">
-                <i>delete</i>
-                Delete Recipe
-            </button>
+            <form action="{{ url_for('recipes.delete', id=recipe['id']) }}" method="post">
+                <button class="border" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+                    <i>delete</i>
+                    Delete Recipe
+                </button>
+            </form>
         </div>
         <div id="view-recipe-content">
             <div id="view-recipe-ingredients">
@@ -65,5 +70,18 @@
             </div>
         </div>
     </article>
+    <div class="modal max" id="modal-image-zoom">
+        <div class="content-container">
+            <!-- <div class="row" style="justify-content: space-between;"> -->
+            <div class="row">
+                <h5>{{ recipe['title'] }}</h5>
+                <button class="transparent circle" id="modal-image-zoom-close-button">
+                    <i>close</i>
+                </button>
+            </div>
+            <div class="small-space"></div>
+            <img id="zoomed-image" src="{{ url_for('static', filename=recipe['image_path']) }}">
+        </div>
+    </div>
 {% endblock %}
 

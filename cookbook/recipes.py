@@ -104,7 +104,8 @@ def add():
                 INSERT INTO recipe (
                     user_id, title, author, description,  source_url,
                     image_path, servings, prep_time,  cook_time, instructions)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                RETURNING id;
                 """
             args = (g.user['id'], title, author, description, source_url,
                 image_path, servings, prep_time, cook_time, instructions)
@@ -139,4 +140,17 @@ def get_recipe(id):
 @login_required
 def view(id):
     recipe = get_recipe(id)
+
     return render_template('recipes/view.html', recipe=recipe)
+
+@bp.route('/delete/<int:id>', methods=('POST',))
+@login_required
+def delete(id):
+    # To check whether recipe exists, will abort otherwise.
+    get_recipe(id)
+
+    db = get_db()
+    db.execute('DELETE FROM recipe WHERE id = ?', (id,))
+    db.commit()
+
+    return redirect(url_for('recipes.index'))

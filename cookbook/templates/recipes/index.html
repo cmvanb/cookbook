@@ -3,7 +3,7 @@
 {% block title %}Recipes{% endblock %}
 
 {% block header %}
-    <div class="large-space"></div>
+    <div class="small-space"></div>
     <div class="row">
         <div class="field label prefix border max">
             <i>search</i>
@@ -20,15 +20,23 @@
 {% block content %}
     <div class="grid main-grid">
         {% for recipe in recipes %}
-            <article class="no-padding s12 m6 l3 clickable medium-elevate" onclick="location.href='{{ url_for('recipes.view', id=recipe['id']) }}'">
+            <article class="no-padding s16 m6 l3 clickable medium-elevate" onclick="location.href='{{ url_for('recipes.view', id=recipe['id']) }}'">
                 <img class="responsive small" src="{{ url_for('static', filename=recipe['image_path']) }}">
                 <div class="padding">
-                    <h5>{{ recipe['title'] }}</h5>
+                    <h6>{{ recipe['title'] }}</h6>
                     <!-- <p>{{ recipe['created'].strftime('%Y-%m-%d') }}</p> -->
-                    <p>{{ recipe['description'] }}</p>
+                    <p class="multiline-truncate">{{ recipe['description'] }}</p>
                 </div>
             </article>
         {% endfor %}
+        <article class="no-padding s16 m6 l3 clickable medium-elevate" onclick="location.href='{{ url_for('recipes.add') }}'">
+            <div class="responsive primary" id="add-recipe-card">
+                <i class="absolute center middle">add</i>
+            </div>
+            <div class="padding">
+                <h5>Add Recipe</h5>
+            </div>
+        </article>
     </div>
 {% endblock %}
 
