@@ -18,9 +18,9 @@
 {% endblock %}
 
 {% block content %}
-    <div class="grid main-grid">
+    <div class="grid">
         {% for recipe in recipes %}
-            <article class="no-padding s16 m6 l3 clickable medium-elevate" onclick="location.href='{{ url_for('recipes.view', id=recipe['id']) }}'">
+            <article class="no-padding s12 m6 l3 clickable medium-elevate" onclick="location.href='{{ url_for('recipes.view', id=recipe['id']) }}'">
                 <img class="responsive small" src="{{ url_for('static', filename=recipe['image_path']) }}">
                 <div class="padding">
                     <h6>{{ recipe['title'] }}</h6>
@@ -29,7 +29,7 @@
                 </div>
             </article>
         {% endfor %}
-        <article class="no-padding s16 m6 l3 clickable medium-elevate" onclick="location.href='{{ url_for('recipes.add') }}'">
+        <article class="no-padding s12 m6 l3 clickable medium-elevate" onclick="location.href='{{ url_for('recipes.add') }}'">
             <div class="responsive primary" id="add-recipe-card">
                 <i class="absolute center middle">add</i>
             </div>

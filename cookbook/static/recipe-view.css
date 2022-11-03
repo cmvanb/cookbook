@@ -1,0 +1,58 @@
+#view-recipe-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16rem;
+    margin: 0;
+}
+
+#view-recipe-image {
+    flex: 1 1 420rem;
+    max-height: 400rem;
+    margin: 0;
+}
+
+#view-recipe-info {
+    flex: 1 1 420rem;
+    margin: 0;
+}
+
+#view-recipe-attr {
+    display: inline-flex;
+    padding-bottom: 8rem;
+}
+
+#view-recipe-attr-icon {
+    margin-right: 8rem;
+}
+
+#view-recipe-content {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 16rem;
+}
+
+#view-recipe-ingredients {
+    margin-right: 16rem;
+}
+
+#view-recipe-instructions {
+}
+
+#modal-image-zoom-close-button {
+    float: right;
+}
+
+#modal-image-zoom-container {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+}
+
+#zoomed-image {
+    width: fit-content;
+    max-width: 100%;
+    max-height: calc(100vh - 102rem);
+    margin: auto;
+}
+

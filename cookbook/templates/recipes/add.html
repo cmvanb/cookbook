@@ -54,9 +54,9 @@
                 <span class="helper">Optional. Enter a value in minutes.</span>
             </div>
 
-            <div class="field label border">
+            <div class="field textarea label border">
+                <textarea name="instructions" id="instructions" value="{{ request.form['instructions'] }}" required></textarea>
                 <label for="instructions">Instructions</label>
-                <input name="instructions" id="instructions" value="{{ request.form['instructions'] }}" required>
             </div>
 
             <!-- TODO: Tags and ingredients. -->
