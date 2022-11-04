@@ -30,54 +30,70 @@
     <article class="medium-elevate no-padding">
         <img class="responsive" id="view-recipe-image" src="{{ url_for('static', filename=recipe['image_path']) }}">
         <div class="padding">
-            <h4>{% block title %}{{ recipe['title'] }}{% endblock %}</h4>
-            <p>by {{ recipe['author'] }}</p>
-            <a class="link" href="{{ recipe['source_url'] }}">{{ recipe['source_url'] }}</a>
-            <div class="row">
-                <div id="view-recipe-attr" class="middle-align">
-                    <i id="view-recipe-attr-icon" class="small">schedule</i>
-                    <span>Prep: {{ recipe['prep_time'] }} mins</span>
-                </div>
-                <div id="view-recipe-attr" class="middle-align">
-                    <i id="view-recipe-attr-icon" class="small">schedule</i>
-                    <span>Cook: {{ recipe['cook_time'] }} mins</span>
-                </div>
-            </div>
-            <p>{{ recipe['description'] }}</p>
-            <div class="row">
-                <div class="field label border">
-                    <label for="servings">Servings</label>
-                    <input type="number" id="servings" name="servings" value="{{ recipe['servings'] }}" required>
-                </div>
-                <table class="border fill">
-                    <tbody>
-                        <tr>
-                            <td>kcal</td>
-                            <td>fat</td>
-                            <td>carbs</td>
-                            <td>protein</td>
-                            <td>sugars</td>
-                            <td>fibers</td>
-                            <td>saturates</td>
-                            <td>salt</td>
-                        </tr>
-                        <tr>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div id="view-recipe-header" class="center-align">
+                <h4>{% block title %}{{ recipe['title'] }}{% endblock %}</h4>
+                <p>by {{ recipe['author'] }}</p>
+                <a class="link" href="{{ recipe['source_url'] }}">{{ recipe['source_url'] }}</a>
             </div>
             <div id="view-recipe-content">
-                <div id="view-recipe-ingredients">
+                <section>
+                    <h6>Summary</h6>
+                    <div id="view-recipe-attributes">
+                        <div id="view-recipe-attr" class="middle-align">
+                            <i class="small">schedule</i>
+                            <span>Prep: {{ recipe['prep_time'] }} mins</span>
+                        </div>
+                        <div id="view-recipe-attr" class="middle-align">
+                            <i class="small">schedule</i>
+                            <span>Cook: {{ recipe['cook_time'] }} mins</span>
+                        </div>
+                    </div>
+                    <p>{{ recipe['description'] }}</p>
+                </section>
+                <section id="view-recipe-nutrition">
+                    <span>
+                        <h6>Nutrition&nbsp;<small>(per serving)</small></h6>
+                    </span>
+                    <table class="border fill">
+                        <tbody>
+                            <tr>
+                                <td>kcal</td>
+                                <td>fat</td>
+                                <td>carbs</td>
+                                <td>protein</td>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>0g</td>
+                                <td>0g</td>
+                                <td>0g</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <td>sugars</td>
+                                <td>fibers</td>
+                                <td>saturates</td>
+                                <td>salt</td>
+                            </tr>
+                            <tr>
+                                <td>0g</td>
+                                <td>0g</td>
+                                <td>0g</td>
+                                <td>0g</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section>
                     <h6>Ingredients</h6>
-
+                    <div id="view-recipe-servings" class="field label border">
+                        <label for="servings">Servings</label>
+                        <input type="number" id="servings" name="servings" value="{{ recipe['servings'] }}" required>
+                        <div id="view-recipe-servings-tooltip" class="tooltip right">
+                            Change the servings to scale the ingredients appropriately.
+                        </div>
+                    </div>
                     <table class="border fill">
                         <tbody>
                             <tr>
@@ -89,13 +105,40 @@
                             <tr>
                                 <td>200g chestnut mushrooms</td>
                             </tr>
+                            <tr>
+                                <td>2 cloves of garlic</td>
+                            </tr>
+                            <tr>
+                                <td>1 tbsp of butter</td>
+                            </tr>
+                            <tr>
+                                <td>200g chestnut mushrooms</td>
+                            </tr>
+                            <tr>
+                                <td>2 cloves of garlic</td>
+                            </tr>
+                            <tr>
+                                <td>1 tbsp of butter</td>
+                            </tr>
+                            <tr>
+                                <td>200g chestnut mushrooms</td>
+                            </tr>
+                            <tr>
+                                <td>2 cloves of garlic</td>
+                            </tr>
+                            <tr>
+                                <td>1 tbsp of butter</td>
+                            </tr>
+                            <tr>
+                                <td>200g chestnut mushrooms</td>
+                            </tr>
                         </tbody>
                     </table>
-                </div>
-                <div id="view-recipe-instructions">
+                </section>
+                <section id="view-recipe-instructions">
                     <h6>Instructions</h6>
                     <p>{{ recipe['instructions'] }}</p>
-                </div>
+                </section>
             </div>
         </div>
     </article>
