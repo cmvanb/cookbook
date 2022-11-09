@@ -51,9 +51,10 @@ CREATE TABLE ingredient (
 CREATE TABLE recipe_ingredient_map (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     recipe_id INTEGER NOT NULL,
-    ingredient_id INTEGER NOT NULL,
+    -- ingredient_id INTEGER NOT NULL,
+    input_text TEXT NOT NULL,
     count REAL NOT NULL,
-    FOREIGN KEY (recipe_id) REFERENCES recipe (id),
-    FOREIGN KEY (ingredient_id) REFERENCES ingredient (id)
+    FOREIGN KEY (recipe_id) REFERENCES recipe (id)
+    -- FOREIGN KEY (ingredient_id) REFERENCES ingredient (id)
 );
 

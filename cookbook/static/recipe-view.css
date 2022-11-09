@@ -1,3 +1,7 @@
+section {
+    width: 360rem;
+}
+
 #view-recipe-image {
     flex: 1 1 420rem;
     max-height: 400rem;
@@ -25,6 +29,14 @@
     display: block;
 }
 
+#view-recipe-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 16rem;
+    width: fit-content;
+    margin: 24rem auto;
+}
+
 #view-recipe-content {
     display: flex;
     flex-wrap: wrap;
@@ -34,9 +46,22 @@
     margin: 24rem auto;
 }
 
-#view-recipe-nutrition table {
-    table-layout: fixed;
+#view-recipe-nutrition {
+    max-width: 640rem;
 }
+
+#view-recipe-nutrition table {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#view-recipe-nutrition td {
+    width: 80rem;
+}
+
+/* #view-recipe-nutrition table { */
+/*     table-layout: fixed; */
+/* } */
 
 #view-recipe-servings {
     margin: 16rem 0;
@@ -67,9 +92,5 @@
     max-width: 100%;
     max-height: calc(100vh - 102rem);
     margin: auto;
-}
-
-section {
-    width: 360rem;
 }
 

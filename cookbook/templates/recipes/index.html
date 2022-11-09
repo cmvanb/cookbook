@@ -5,15 +5,15 @@
 {% block header %}
     <div class="small-space"></div>
     <div class="row">
+        <button onclick="location.href='{{ url_for('recipes.add') }}'">
+            <i>add</i>
+            Add Recipe
+        </button>
         <div class="field label prefix border max">
             <i>search</i>
             <input type="search" id="search" name="search">
             <label>Search</label>
         </div>
-        <button onclick="location.href='{{ url_for('recipes.add') }}'">
-            <i>add</i>
-            Add Recipe
-        </button>
     </div>
 {% endblock %}
 

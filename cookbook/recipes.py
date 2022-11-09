@@ -5,10 +5,10 @@ from flask import (
     Blueprint, current_app, flash, g, redirect, render_template, request, url_for, session
     )
 from werkzeug.exceptions import abort
-from werkzeug.utils import secure_filename
 
 from cookbook.auth import login_required
 from cookbook.db import get_db
+from cookbook.parsing.ingredient_parser import IngredientParser
 
 # TODO: Extract to utility?
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -39,6 +39,7 @@ def add():
     if request.method == 'POST':
         error = None
 
+        # TODO: POST tags and ingredients.
         title = request.form['title']
         author = request.form['author']
         description = request.form['description']
@@ -47,10 +48,10 @@ def add():
         image_path = None
         prep_time = request.form['prep_time']
         cook_time = request.form['cook_time']
+        ingredients = request.form['ingredients']
         instructions = request.form['instructions']
 
-        # TODO: POST tags and ingredients.
-
+        # Validate image.
         image = request.files['image']
         if image is not None:
             if image.filename == '':
@@ -59,7 +60,6 @@ def add():
                 error = 'Image format not allowed.'
             else:
                 filename = str(uuid.uuid4())
-                # filename = secure_filename(image.filename)
 
                 # Save image to disk.
                 image.save(os.path.join(current_app.static_folder, 'user_images', filename))
@@ -93,25 +93,52 @@ def add():
             error = 'Prep Time is required.'
         elif not cook_time:
             error = 'Cook Time is required.'
+        elif not ingredients:
+            error = 'Ingredients is required.'
         elif not instructions:
             error = 'Instructions is required.'
+
+        # Parse ingredients.
+        ingredient_parser = IngredientParser()
+        parsed_ingredients = ingredient_parser.Parse(ingredients)
 
         if error is not None:
             flash(error)
         else:
             db = get_db()
+
+            # Insert recipe row.
             sql = """
                 INSERT INTO recipe (
                     user_id, title, author, description,  source_url,
-                    image_path, servings, prep_time,  cook_time, instructions)
+                    image_path, servings, prep_time,  cook_time, instructions
+                    )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                RETURNING id;
+                RETURNING id
                 """
             args = (g.user['id'], title, author, description, source_url,
                 image_path, servings, prep_time, cook_time, instructions)
             recipe = db.execute(sql, args).fetchone()
             db.commit()
-            return redirect(url_for('recipes.view', id=recipe['id']))
+
+            recipe_id = recipe['id']
+
+            # TODO: If new ingredient(s) detected, insert ingredient row(s).
+
+            # Insert recipe_ingredient_map rows.
+            for ingredient in parsed_ingredients:
+                print(f"{ingredient.count} {ingredient.unit.long_name} of {ingredient.name}")
+                sql = """
+                    INSERT INTO recipe_ingredient_map (
+                        recipe_id, input_text, count
+                        )
+                    VALUES (?, ?, ?)
+                """
+                args = (recipe_id, ingredient.name, ingredient.count)
+                db.execute(sql, args)
+                db.commit()
+
+            return redirect(url_for('recipes.view', id=recipe_id))
 
     return render_template('recipes/add.html')
 
@@ -136,12 +163,30 @@ def get_recipe(id):
 
     return recipe
 
+def get_recipe_ingredient_maps(recipe_id):
+    db = get_db()
+    sql = """
+        SELECT
+            id, recipe_id, input_text, count
+        FROM recipe_ingredient_map m
+        WHERE m.recipe_id = ?
+    """
+    args = (recipe_id, )
+    recipe_ingredient_maps = db.execute(sql, args).fetchall()
+
+    return recipe_ingredient_maps
+
 @bp.route('/view/<int:id>')
 @login_required
 def view(id):
     recipe = get_recipe(id)
+    recipe_ingredient_maps = get_recipe_ingredient_maps(id)
 
-    return render_template('recipes/view.html', recipe=recipe)
+    return render_template(
+        'recipes/view.html',
+        recipe=recipe,
+        recipe_ingredient_maps=recipe_ingredient_maps
+        )
 
 @bp.route('/delete/<int:id>', methods=('POST',))
 @login_required
@@ -149,8 +194,12 @@ def delete(id):
     # To check whether recipe exists, will abort otherwise.
     get_recipe(id)
 
+
+    # TODO: Delete associated images.
+
     db = get_db()
     db.execute('DELETE FROM recipe WHERE id = ?', (id,))
     db.commit()
 
     return redirect(url_for('recipes.index'))
+

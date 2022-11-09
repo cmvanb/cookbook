@@ -35,7 +35,7 @@
                 <p>by {{ recipe['author'] }}</p>
                 <a class="link" href="{{ recipe['source_url'] }}">{{ recipe['source_url'] }}</a>
             </div>
-            <div id="view-recipe-content">
+            <!-- <div id="view-recipe-summary"> -->
                 <section>
                     <h6>Summary</h6>
                     <div id="view-recipe-attributes">
@@ -50,7 +50,7 @@
                     </div>
                     <p>{{ recipe['description'] }}</p>
                 </section>
-                <section id="view-recipe-nutrition">
+                <div id="view-recipe-nutrition">
                     <span>
                         <h6>Nutrition&nbsp;<small>(per serving)</small></h6>
                     </span>
@@ -68,8 +68,6 @@
                                 <td>0g</td>
                                 <td>0g</td>
                             </tr>
-                        </tbody>
-                        <tbody>
                             <tr>
                                 <td>sugars</td>
                                 <td>fibers</td>
@@ -84,7 +82,9 @@
                             </tr>
                         </tbody>
                     </table>
-                </section>
+                </div>
+            <!-- </div> -->
+            <div id="view-recipe-content">
                 <section>
                     <h6>Ingredients</h6>
                     <div id="view-recipe-servings" class="field label border">
@@ -96,42 +96,11 @@
                     </div>
                     <table class="border fill">
                         <tbody>
-                            <tr>
-                                <td>2 cloves of garlic</td>
-                            </tr>
-                            <tr>
-                                <td>1 tbsp of butter</td>
-                            </tr>
-                            <tr>
-                                <td>200g chestnut mushrooms</td>
-                            </tr>
-                            <tr>
-                                <td>2 cloves of garlic</td>
-                            </tr>
-                            <tr>
-                                <td>1 tbsp of butter</td>
-                            </tr>
-                            <tr>
-                                <td>200g chestnut mushrooms</td>
-                            </tr>
-                            <tr>
-                                <td>2 cloves of garlic</td>
-                            </tr>
-                            <tr>
-                                <td>1 tbsp of butter</td>
-                            </tr>
-                            <tr>
-                                <td>200g chestnut mushrooms</td>
-                            </tr>
-                            <tr>
-                                <td>2 cloves of garlic</td>
-                            </tr>
-                            <tr>
-                                <td>1 tbsp of butter</td>
-                            </tr>
-                            <tr>
-                                <td>200g chestnut mushrooms</td>
-                            </tr>
+                            {% for map in recipe_ingredient_maps %}
+                                <tr>
+                                    <td>{{ map['input_text'] }}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </section>
