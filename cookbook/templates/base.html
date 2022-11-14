@@ -73,9 +73,9 @@
     </div>
     <!-- Page content -->
     <main class="responsive" id="main-content">
-        <header>
+        <div id="controls">
             {% block header %}{% endblock %}
-        </header>
+        </div>
         {% for message in get_flashed_messages() %}
             <mark>{{ message }}</mark>
             <div class="toast error white-text top active">
@@ -87,7 +87,6 @@
     </main>
     <!-- Page footer -->
     <footer>
-        <p>Copyright (c) 2022 yo</p>
     </footer>
 </body>
 </html>

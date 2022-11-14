@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block header %}
-    <div class="small-space"></div>
     <div class="row">
         <button>
             <i>edit</i>
@@ -26,7 +25,6 @@
 {% endblock %}
 
 {% block content %}
-    <div class="small-space"></div>
     <article class="medium-elevate no-padding">
         <img class="responsive" id="view-recipe-image" src="{{ url_for('static', filename=recipe['image_path']) }}">
         <div class="padding">
@@ -35,65 +33,68 @@
                 <p>by {{ recipe['author'] }}</p>
                 <a class="link" href="{{ recipe['source_url'] }}">{{ recipe['source_url'] }}</a>
             </div>
-            <!-- <div id="view-recipe-summary"> -->
-                <section>
-                    <h6>Summary</h6>
-                    <div id="view-recipe-attributes">
-                        <div id="view-recipe-attr" class="middle-align">
-                            <i class="small">schedule</i>
-                            <span>Prep: {{ recipe['prep_time'] }} mins</span>
-                        </div>
-                        <div id="view-recipe-attr" class="middle-align">
-                            <i class="small">schedule</i>
-                            <span>Cook: {{ recipe['cook_time'] }} mins</span>
-                        </div>
-                    </div>
-                    <p>{{ recipe['description'] }}</p>
-                </section>
-                <div id="view-recipe-nutrition">
-                    <span>
-                        <h6>Nutrition&nbsp;<small>(per serving)</small></h6>
-                    </span>
-                    <table class="border fill">
-                        <tbody>
-                            <tr>
-                                <td>kcal</td>
-                                <td>fat</td>
-                                <td>carbs</td>
-                                <td>protein</td>
-                            </tr>
-                            <tr>
-                                <td>0</td>
-                                <td>0g</td>
-                                <td>0g</td>
-                                <td>0g</td>
-                            </tr>
-                            <tr>
-                                <td>sugars</td>
-                                <td>fibers</td>
-                                <td>saturates</td>
-                                <td>salt</td>
-                            </tr>
-                            <tr>
-                                <td>0g</td>
-                                <td>0g</td>
-                                <td>0g</td>
-                                <td>0g</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <section id="view-recipe-attributes"/>
+                <div id="view-recipe-attr" class="middle-align">
+                    <i class="small">schedule</i>
+                    <span>Prep: {{ recipe['prep_time'] }} mins</span>
                 </div>
+                <div id="view-recipe-attr" class="middle-align">
+                    <i class="small">schedule</i>
+                    <span>Cook: {{ recipe['cook_time'] }} mins</span>
+                </div>
+            </section>
+            <section id="view-recipe-summary">
+                <p>{{ recipe['description'] }}</p>
+            </section>
+            <!-- TODO: Implement. -->
+            <!-- <div id="view-recipe-nutrition"> -->
+            <!--     <div id="view-recipe-nutrition-table"> -->
+            <!--         <div> -->
+            <!--             <span id="view-recipe-nutrition-header"> -->
+            <!--                 <h6>Nutrition&nbsp;<small>(per serving)</small></h6> -->
+            <!--             </span> -->
+            <!--             <table class="border fill"> -->
+            <!--                 <tr> -->
+            <!--                     <td>kcal</td> -->
+            <!--                     <td>fat</td> -->
+            <!--                     <td>carbs</td> -->
+            <!--                     <td>protein</td> -->
+            <!--                 </tr> -->
+            <!--                 <tr> -->
+            <!--                     <td>0</td> -->
+            <!--                     <td>0g</td> -->
+            <!--                     <td>0g</td> -->
+            <!--                     <td>0g</td> -->
+            <!--                 </tr> -->
+            <!--             </table> -->
+            <!--         </div> -->
+            <!--         <table class="border fill"> -->
+            <!--             <tr> -->
+            <!--                 <td>sugars</td> -->
+            <!--                 <td>fibers</td> -->
+            <!--                 <td>saturates</td> -->
+            <!--                 <td>salt</td> -->
+            <!--             </tr> -->
+            <!--             <tr> -->
+            <!--                 <td>0g</td> -->
+            <!--                 <td>0g</td> -->
+            <!--                 <td>0g</td> -->
+            <!--                 <td>0g</td> -->
+            <!--             </tr> -->
+            <!--         </table> -->
+            <!--     </div> -->
             <!-- </div> -->
             <div id="view-recipe-content">
                 <section>
                     <h6>Ingredients</h6>
-                    <div id="view-recipe-servings" class="field label border">
-                        <label for="servings">Servings</label>
-                        <input type="number" id="servings" name="servings" value="{{ recipe['servings'] }}" required>
-                        <div id="view-recipe-servings-tooltip" class="tooltip right">
-                            Change the servings to scale the ingredients appropriately.
-                        </div>
-                    </div>
+                    <!-- TODO: Implement. -->
+                    <!-- <div id="view-recipe-servings" class="field label border"> -->
+                    <!--     <label for="servings">Servings</label> -->
+                    <!--     <input type="number" id="servings" name="servings" value="{{ recipe['servings'] }}" required> -->
+                    <!--     <div id="view-recipe-servings-tooltip" class="tooltip right"> -->
+                    <!--         Change the servings to scale the ingredients appropriately. -->
+                    <!--     </div> -->
+                    <!-- </div> -->
                     <table class="border fill">
                         <tbody>
                             {% for map in recipe_ingredient_maps %}

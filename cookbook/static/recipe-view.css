@@ -1,5 +1,5 @@
 section {
-    width: 360rem;
+    width: 320rem;
 }
 
 #view-recipe-image {
@@ -9,13 +9,13 @@ section {
 }
 
 #view-recipe-attributes {
-    display: inline-flex;
+    display: flex;
     gap: 8rem;
-    margin-bottom: 8rem;
+    margin: 16rem auto;
+    justify-content: space-evenly;
 }
 
 #view-recipe-attr {
-    display: flex;
     gap: 8rem;
 }
 
@@ -30,11 +30,10 @@ section {
 }
 
 #view-recipe-summary {
-    display: flex;
-    flex-direction: column;
-    gap: 16rem;
+    margin: 16rem auto;
+    text-align: center;
     width: fit-content;
-    margin: 24rem auto;
+    max-width: 420rem;
 }
 
 #view-recipe-content {
@@ -43,25 +42,36 @@ section {
     justify-content: center;
     gap: 16rem;
     width: fit-content;
-    margin: 24rem auto;
+    margin: auto;
 }
 
 #view-recipe-nutrition {
-    max-width: 640rem;
+    margin-top: 56rem;
+}
+
+#view-recipe-nutrition-table {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Ugly CSS, but does the job. */
+#view-recipe-nutrition-header {
+    position: absolute;
+    top: -32rem;
+    left: 0rem;
 }
 
 #view-recipe-nutrition table {
-    display: flex;
-    flex-wrap: wrap;
+    width: 320rem;
+    table-layout: fixed;
 }
-
-#view-recipe-nutrition td {
-    width: 80rem;
+@media only screen and (min-width: 704px) {
+    #view-recipe-nutrition table {
+        width: 328rem;
+        table-layout: fixed;
+    }
 }
-
-/* #view-recipe-nutrition table { */
-/*     table-layout: fixed; */
-/* } */
 
 #view-recipe-servings {
     margin: 16rem 0;

@@ -2,8 +2,26 @@
     margin-top: 0rem;
 }
 
+article {
+    font-family: serif;
+}
+
+h1, h2, h3, h4, h5, h6, label, button {
+    font-family: var(--font);
+}
+
 #main-content {
     max-width: 960rem;
+}
+
+#controls {
+    margin-top: 16rem;
+    margin-bottom: 24rem;
+}
+
+/* For the search bar. */
+#controls .field {
+    height: 40rem;
 }
 
 #add-recipe-card {
