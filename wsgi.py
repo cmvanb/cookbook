@@ -1,3 +1,3 @@
-from cookbook import app
+from cookbook import create_app
 
-application = app
+application = create_app()
