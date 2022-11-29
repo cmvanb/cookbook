@@ -15,7 +15,7 @@ PYTHON=python3.10
 WORK_DIR=$(pwd)
 
 # Remove existing deployment.
-rm -rf "$APP_DIR/*"
+rm -rf $APP_DIR/*
 
 # Change directory.
 cd $APP_DIR
