@@ -2,7 +2,8 @@
 __pycache__/
 
 # User uploaded images.
-cookbook/static/user_images
+cookbook/static/user_images/*.jpg
+cookbook/static/user_images/*.png
 
 # Flask instance (database).
 instance/
