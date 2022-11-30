@@ -1,6 +1,6 @@
 # Cookbook
 
-A personal recipe management and meal planner app
+A personal recipe management and meal planner app.
 
 ## Development
 
@@ -13,6 +13,13 @@ flask --app cookbook --debug run
 ```
 
 Navigate to `127.0.0.1:5000`.
+
+## Tests
+
+```bash
+coverage run -m pytest
+coverage report
+```
 
 ## Package Installation
 
