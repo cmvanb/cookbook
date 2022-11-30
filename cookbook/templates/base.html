@@ -13,80 +13,82 @@
     {% block custom_js %}{% endblock %}
 </head>
 <body>
-    <!-- App bar -->
-    <header class="responsive fixed primary">
-        <nav>
-            <button class="circle transparent" id="modal-menu-button">
-                <i>menu</i>
-            </button>
-            {% if g.user %}
-                <h5 class="max center-align">{{ g.user['display_name'] }}'s Cookbook</h5>
-            {% else %}
-                <h5 class="max center-align">Cookbook</h5>
-            {% endif %}
-            <i>menu_book</i>
-        </nav>
-    </header>
-    <!-- Modal menu -->
-    <div class="modal left" id="modal-menu">
-        <header class="fixed">
+    <div id="app">
+        <!-- App bar -->
+        <header class="responsive fixed primary">
             <nav>
-                <button class="transparent circle" id="close-modal-menu-button">
-                    <i>close</i>
+                <button class="circle transparent" id="modal-menu-button">
+                    <i>menu</i>
                 </button>
-                <h5 class="max">Cookbook</h5>
+                {% if g.user %}
+                    <h5 class="max center-align">{{ g.user['display_name'] }}'s Cookbook</h5>
+                {% else %}
+                    <h5 class="max center-align">Cookbook</h5>
+                {% endif %}
+                <i>menu_book</i>
             </nav>
         </header>
-        {% if g.user %}
-            <!-- TODO: Disable this. -->
-            <a class="row">
-                <i>calendar_month</i>
-                <span>Meal Planner</span>
-            </a>
-            <a class="row" href="{{ url_for('recipes.index') }}">
-                <i>menu_book</i>
-                <span>Recipes</span>
-            </a>
-            <div class="small-divider"></div>
-            <a class="row">
-                <i>settings</i>
-                <span>Settings</span>
-            </a>
-            <a class="row">
-                <i>account_circle</i>
-                <span>{{ g.user['email'] }}</span>
-            </a>
-            <a class="row" href="{{ url_for('auth.logout') }}">
-                <i>logout</i>
-                <span>Log Out</span>
-            </a>
-        {% else %}
-            <a class="row" href="{{ url_for('auth.register') }}">
-                <i>app_registration</i>
-                <span>Register</span>
-            </a>
-            <a class="row" href="{{ url_for('auth.login') }}">
-                <i>login</i>
-                <span>Log In</span>
-            </a>
-        {% endif %}
-    </div>
-    <!-- Page content -->
-    <main class="responsive" id="main-content">
-        <div id="controls">
-            {% block header %}{% endblock %}
+        <!-- Modal menu -->
+        <div class="modal left" id="modal-menu">
+            <header class="fixed">
+                <nav>
+                    <button class="transparent circle" id="close-modal-menu-button">
+                        <i>close</i>
+                    </button>
+                    <h5 class="max">Cookbook</h5>
+                </nav>
+            </header>
+            {% if g.user %}
+                <!-- TODO: Disable this. -->
+                <a class="row">
+                    <i>calendar_month</i>
+                    <span>Meal Planner</span>
+                </a>
+                <a class="row" href="{{ url_for('recipes.index') }}">
+                    <i>menu_book</i>
+                    <span>Recipes</span>
+                </a>
+                <div class="small-divider"></div>
+                <a class="row">
+                    <i>settings</i>
+                    <span>Settings</span>
+                </a>
+                <a class="row">
+                    <i>account_circle</i>
+                    <span>{{ g.user['email'] }}</span>
+                </a>
+                <a class="row" href="{{ url_for('auth.logout') }}">
+                    <i>logout</i>
+                    <span>Log Out</span>
+                </a>
+            {% else %}
+                <a class="row" href="{{ url_for('auth.register') }}">
+                    <i>app_registration</i>
+                    <span>Register</span>
+                </a>
+                <a class="row" href="{{ url_for('auth.login') }}">
+                    <i>login</i>
+                    <span>Log In</span>
+                </a>
+            {% endif %}
         </div>
-        {% for message in get_flashed_messages() %}
-            <mark>{{ message }}</mark>
-            <div class="toast error white-text top active">
-                <i>error</i>
-                <span>{{ message }}</span>
+        <!-- Page content -->
+        <main class="responsive" id="main-content">
+            <div id="controls">
+                {% block header %}{% endblock %}
             </div>
-        {% endfor %}
-        {% block content %}{% endblock %}
-    </main>
-    <!-- Page footer -->
-    <footer>
-    </footer>
+            {% for message in get_flashed_messages() %}
+                <mark>{{ message }}</mark>
+                <div class="toast error white-text top active">
+                    <i>error</i>
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+            {% block content %}{% endblock %}
+        </main>
+        <!-- Page footer -->
+        <footer>
+        </footer>
+    </div>
 </body>
 </html>
