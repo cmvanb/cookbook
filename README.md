@@ -2,6 +2,8 @@
 
 A personal recipe management and meal planner app.
 
+A [demo instance](https://codemu.ch/cookbook) is now live.
+
 ## Development
 
 ```bash
