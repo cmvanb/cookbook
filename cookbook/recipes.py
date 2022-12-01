@@ -20,7 +20,7 @@ def file_allowed(file):
 
 bp = Blueprint('recipes', __name__, url_prefix='/recipes')
 
-@bp.route('/')
+@bp.route('')
 @login_required
 def index():
     db = get_db()

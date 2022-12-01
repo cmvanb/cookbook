@@ -42,7 +42,7 @@ class AuthActions(object):
     def __init__(self, client):
         self._client = client
 
-    def login(self, email='test@example', password='test'):
+    def login(self, email='test@example.com', password='test'):
         return self._client.post(
             '/auth/login',
             data={'email': email, 'password': password}
@@ -55,3 +55,5 @@ class AuthActions(object):
 @pytest.fixture
 def auth(client):
     return AuthActions(client)
+
+
