@@ -3,6 +3,8 @@ import functools
 from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from email_validator import validate_email, EmailNotValidError
+
 from cookbook.db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -17,6 +19,7 @@ def register():
         db = get_db()
         error = None
 
+        # Missing data.
         if not email:
             error = 'Email is required.'
         elif not display_name:
@@ -24,9 +27,16 @@ def register():
         elif not password:
             error = 'Password is required.'
 
-        # TODO: Validate email adrress.
+        if error is None:
+            # Validate email address.
+            try:
+                validation = validate_email(email, check_deliverability=True)
+                email = validation.email
+            except EmailNotValidError as e:
+                error = str(e)
 
         if error is None:
+            # Insert database row.
             try:
                 db.execute(
                     'INSERT INTO user (email, display_name, password) VALUES (?, ?, ?)',
@@ -38,8 +48,10 @@ def register():
             else:
                 return redirect(url_for('auth.login'))
 
+        # There was an error, so show it.
         flash(error)
 
+    # On GETs we simply render.
     return render_template('auth/register.html')
 
 # Login route.
