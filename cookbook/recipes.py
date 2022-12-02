@@ -39,7 +39,6 @@ def add():
     if request.method == 'POST':
         error = None
 
-        # TODO: POST tags and ingredients.
         title = request.form['title']
         author = request.form['author']
         description = request.form['description']
@@ -104,41 +103,42 @@ def add():
 
         if error is not None:
             flash(error)
-        else:
-            db = get_db()
+            return render_template('recipes/add.html')
 
-            # Insert recipe row.
+        db = get_db()
+
+        # Insert recipe row.
+        sql = """
+            INSERT INTO recipe (
+                user_id, title, author, description, source_url,
+                image_path, servings, prep_time, cook_time, instructions
+                )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            RETURNING id
+            """
+        args = (g.user['id'], title, author, description, source_url,
+            image_path, servings, prep_time, cook_time, instructions)
+        recipe = db.execute(sql, args).fetchone()
+        db.commit()
+
+        recipe_id = recipe['id']
+
+        # TODO: If new ingredient(s) detected, insert ingredient row(s).
+
+        # Insert recipe_ingredient_map rows.
+        for ingredient in parsed_ingredients:
+            print(f"{ingredient.count} {ingredient.unit.long_name} of {ingredient.name}")
             sql = """
-                INSERT INTO recipe (
-                    user_id, title, author, description,  source_url,
-                    image_path, servings, prep_time,  cook_time, instructions
+                INSERT INTO recipe_ingredient_map (
+                    recipe_id, input_text, count
                     )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                RETURNING id
+                VALUES (?, ?, ?)
                 """
-            args = (g.user['id'], title, author, description, source_url,
-                image_path, servings, prep_time, cook_time, instructions)
-            recipe = db.execute(sql, args).fetchone()
+            args = (recipe_id, ingredient.name, ingredient.count)
+            db.execute(sql, args)
             db.commit()
 
-            recipe_id = recipe['id']
-
-            # TODO: If new ingredient(s) detected, insert ingredient row(s).
-
-            # Insert recipe_ingredient_map rows.
-            for ingredient in parsed_ingredients:
-                print(f"{ingredient.count} {ingredient.unit.long_name} of {ingredient.name}")
-                sql = """
-                    INSERT INTO recipe_ingredient_map (
-                        recipe_id, input_text, count
-                        )
-                    VALUES (?, ?, ?)
-                """
-                args = (recipe_id, ingredient.name, ingredient.count)
-                db.execute(sql, args)
-                db.commit()
-
-            return redirect(url_for('recipes.view', id=recipe_id))
+        return redirect(url_for('recipes.view', id=recipe_id))
 
     return render_template('recipes/add.html')
 
@@ -150,12 +150,12 @@ def get_recipe(id):
             image_path, servings, prep_time, cook_time, instructions
         FROM recipe r
         WHERE r.id = ? AND r.user_id = ?
-    """
+        """
     args = (id, session['user_id'])
     recipe = db.execute(sql, args).fetchone()
 
     if recipe is None:
-        abort(404, f"Recipe id {id} does not exist.")
+        abort(404, f"Recipe id {id} not found.")
 
     # NOTE: SQL shouldn't return recipe that doesn't belong to user, this is defensive.
     if recipe['user_id'] != g.user['id']:
@@ -170,7 +170,7 @@ def get_recipe_ingredient_maps(recipe_id):
             id, recipe_id, input_text, count
         FROM recipe_ingredient_map m
         WHERE m.recipe_id = ?
-    """
+        """
     args = (recipe_id, )
     recipe_ingredient_maps = db.execute(sql, args).fetchall()
 
@@ -193,7 +193,6 @@ def view(id):
 def delete(id):
     # To check whether recipe exists, will abort otherwise.
     get_recipe(id)
-
 
     # TODO: Delete associated images.
 
