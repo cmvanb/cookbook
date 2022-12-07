@@ -157,10 +157,6 @@ def get_recipe(id):
     if recipe is None:
         abort(404, f"Recipe id {id} not found.")
 
-    # NOTE: SQL shouldn't return recipe that doesn't belong to user, this is defensive.
-    if recipe['user_id'] != g.user['id']:
-        abort(403)
-
     return recipe
 
 def get_recipe_ingredient_maps(recipe_id):

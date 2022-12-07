@@ -60,7 +60,7 @@ def test_exists_required(client, auth, path):
     assert client.post(path).status_code == 404
 
 
-def test_add(client, auth, app):
+def test_add(client, auth, app, data):
     auth.login()
     assert client.get('/recipes/add').status_code == 200
 
@@ -69,7 +69,7 @@ def test_add(client, auth, app):
         'author': 'oliver jameson',
         'description': 'description',
         'source_url': 'http://example.com',
-        'image': (io.BytesIO(b"some initial text data"), 'whatever.jpg'),
+        'image': (io.BytesIO(b'some initial text data'), 'whatever.jpg'),
         'servings': 2,
         'prep_time': 5,
         'cook_time': 10,
@@ -82,6 +82,18 @@ def test_add(client, auth, app):
         db = get_db()
         count = db.execute('SELECT COUNT(id) FROM recipe').fetchone()[0]
         assert count == 2
+
+
+def test_view(client, auth, app):
+    auth.login()
+
+    response = client.get('/recipes/view/1')
+
+    assert response.status_code == 200
+
+    print(response.data)
+
+    assert b'1tbsp nonsense' in response.data
 
 
 # TODO: Implement this test once edit route is implemented.
@@ -107,6 +119,7 @@ def test_add(client, auth, app):
 #         assert post['title'] == 'updated'
 
 
+# TODO: Figure out which fields need to be required (and thus tested for validation).
 @pytest.mark.parametrize('path', (
     '/recipes/add',
     # '/recipes/edit/1',
@@ -125,7 +138,16 @@ def test_add_edit_validate(client, auth, path):
         'ingredients': 'one\ntwo\nthree',
         'instructions': 'instructions go here',
         })
-    assert b'Title is required.' in response.data
+    assert b'is required.' in response.data
 
 
+def test_delete(client, auth, app):
+    auth.login()
+    response = client.post('/recipes/delete/1')
+    assert response.headers['Location'] == '/recipes'
+
+    with app.app_context():
+        db = get_db()
+        recipe = db.execute('SELECT * FROM recipe WHERE id = 1').fetchone()
+        assert recipe is None
 
