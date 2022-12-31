@@ -9,6 +9,7 @@ A [demo instance](https://codemu.ch/cookbook) is now live.
 ```bash
 git clone git@github.com:cmvanb/cookbook.git
 cd cookbook
+python -m venv venv
 source venv/bin/activate
 flask --app cookbook init-db
 flask --app cookbook --debug run
