@@ -4,14 +4,24 @@ A personal recipe management and meal planner app.
 
 A [demo instance](https://codemu.ch/cookbook) is now live.
 
-## Development
+## Setup
 
+Install the project.
 ```bash
 git clone git@github.com:cmvanb/cookbook.git
 cd cookbook
 python -m venv venv
 source venv/bin/activate
+pip install -r cookbook/requirements.txt
+```
+
+Initialize the database.
+```bash
 flask --app cookbook init-db
+```
+
+Run the local development server.
+```bash
 flask --app cookbook --debug run
 ```
 
