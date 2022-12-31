@@ -60,7 +60,7 @@ def test_exists_required(client, auth, path):
     assert client.post(path).status_code == 404
 
 
-def test_add(client, auth, app, data):
+def test_add(client, auth, app):
     auth.login()
     assert client.get('/recipes/add').status_code == 200
 
