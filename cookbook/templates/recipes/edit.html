@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block custom_css %}
+<link href="{{ url_for('static', filename='recipe-edit.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block header %}
+    <h3>{% block title %}Edit Recipe{% endblock %}</h3>
+{% endblock %}
+
+{% block content %}
+    <article>
+        <form method="post" enctype=multipart/form-data>
+            <div class="field label border">
+                <label for="title">Title</label>
+                <input name="title" id="title" value="{{ recipe['title'] }}" required>
+            </div>
+
+            <div class="field label border">
+                <label for="author">Author</label>
+                <input name="author" id="author" value="{{ recipe['author'] }}" required>
+                <span class="helper">Optional. Defaults to {{ g.user['display_name'] }}.</span>
+            </div>
+
+            <div class="field label border">
+                <label for="source_url">Source URL</label>
+                <input name="source_url" id="source_url" value="{{ recipe['source_url'] }}" required>
+                <span class="helper">Optional.</span>
+            </div>
+
+            <div class="field label border">
+                <label for="description">Description</label>
+                <input name="description" id="description" value="{{ recipe['description'] }}" required>
+                <span class="helper">Optional.</span>
+            </div>
+
+            <div class="field label prefix border">
+                <i>attach_file</i>
+                <input type="text">
+                <img id="image" src="{{ url_for('static', filename=recipe['image_path']) }}">
+                <label class="active">Image</label>
+            </div>
+
+            <div class="field label border">
+                <label for="servings">Servings</label>
+                <input type="number" name="servings" id="servings" value="{{ recipe['servings'] }}" required>
+            </div>
+
+            <div class="field label border">
+                <label for="prep_time">Prep Time</label>
+                <input type="number" name="prep_time" id="prep_time" value="{{ recipe['prep_time'] }}" required>
+                <span class="helper">Optional. Enter a value in minutes.</span>
+            </div>
+
+            <div class="field label border">
+                <label for="cook_time">Cook Time</label>
+                <input type="number" name="cook_time" id="cook_time" value="{{ recipe['cook_time'] }}" required>
+                <span class="helper">Optional. Enter a value in minutes.</span>
+            </div>
+
+            <!-- TODO: Convert to ingredients widget. -->
+            <div class="field textarea label border">
+                <label for="ingredients">Ingredients</label>
+                <textarea name="ingredients" id="ingredients" required>{{ recipe_ingredients_text }}</textarea>
+            </div>
+
+            <div class="field textarea label border">
+                <label for="instructions">Instructions</label>
+                <textarea name="instructions" id="instructions" required>{{ recipe['instructions'] }}</textarea>
+            </div>
+
+            <!-- TODO: Tags and ingredients. -->
+
+            <button type="submit" value="Save">Save</button>
+            <button
+                value="Cancel"
+                onclick="location.href='{{ url_for('recipes.index') }}'"
+                class="border"
+            >
+                Cancel
+            </button>
+        </form>
+    </article>
+{% endblock %}

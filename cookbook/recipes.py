@@ -20,6 +20,36 @@ def file_allowed(file):
 
 bp = Blueprint('recipes', __name__, url_prefix='/recipes')
 
+def get_recipe(id):
+    db = get_db()
+    sql = """
+        SELECT
+            r.id, user_id, created, title, author, description, source_url,
+            image_path, servings, prep_time, cook_time, instructions
+        FROM recipe r
+        WHERE r.id = ? AND r.user_id = ?
+        """
+    args = (id, session['user_id'])
+    recipe = db.execute(sql, args).fetchone()
+
+    if recipe is None:
+        abort(404, f"Recipe id {id} not found.")
+
+    return recipe
+
+def get_recipe_ingredient_maps(recipe_id):
+    db = get_db()
+    sql = """
+        SELECT
+            id, recipe_id, input_text, count
+        FROM recipe_ingredient_map m
+        WHERE m.recipe_id = ?
+        """
+    args = (recipe_id, )
+    recipe_ingredient_maps = db.execute(sql, args).fetchall()
+
+    return recipe_ingredient_maps
+
 @bp.route('')
 @login_required
 def index():
@@ -142,35 +172,22 @@ def add():
 
     return render_template('recipes/add.html')
 
-def get_recipe(id):
-    db = get_db()
-    sql = """
-        SELECT
-            r.id, user_id, created, title, author, description, source_url,
-            image_path, servings, prep_time, cook_time, instructions
-        FROM recipe r
-        WHERE r.id = ? AND r.user_id = ?
-        """
-    args = (id, session['user_id'])
-    recipe = db.execute(sql, args).fetchone()
+@bp.route('/edit/<int:id>', methods=('GET', 'POST'))
+@login_required
+def edit(id):
+    recipe = get_recipe(id)
 
-    if recipe is None:
-        abort(404, f"Recipe id {id} not found.")
+    if request.method == 'POST':
+        return redirect(url_for('recipes.view', id=recipe_id))
 
-    return recipe
-
-def get_recipe_ingredient_maps(recipe_id):
-    db = get_db()
-    sql = """
-        SELECT
-            id, recipe_id, input_text, count
-        FROM recipe_ingredient_map m
-        WHERE m.recipe_id = ?
-        """
-    args = (recipe_id, )
-    recipe_ingredient_maps = db.execute(sql, args).fetchall()
-
-    return recipe_ingredient_maps
+    recipe_ingredient_maps = get_recipe_ingredient_maps(id)
+    recipe_ingredients_text = ''
+    [recipe_ingredients_text := recipe_ingredients_text + map['input_text'] + '\n' for map in recipe_ingredient_maps]
+    return render_template(
+        'recipes/edit.html',
+        recipe=recipe,
+        recipe_ingredients_text=recipe_ingredients_text
+        )
 
 @bp.route('/view/<int:id>')
 @login_required

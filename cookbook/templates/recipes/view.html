@@ -6,7 +6,7 @@
 
 {% block header %}
     <div class="row">
-        <button>
+        <button onclick="location.href='{{ url_for('recipes.edit', id=recipe['id']) }}'">
             <i>edit</i>
             Edit Recipe
         </button>
