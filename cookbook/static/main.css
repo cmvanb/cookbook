@@ -10,6 +10,10 @@ h1, h2, h3, h4, h5, h6, label, button {
     font-family: var(--font);
 }
 
+textarea {
+    line-height: 20rem;
+}
+
 #main-content {
     max-width: 960rem;
 }

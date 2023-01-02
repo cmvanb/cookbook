@@ -181,8 +181,14 @@ def edit(id):
         return redirect(url_for('recipes.view', id=recipe_id))
 
     recipe_ingredient_maps = get_recipe_ingredient_maps(id)
+
+    # TODO: Replace this hack with proper ingredient parsing.
     recipe_ingredients_text = ''
-    [recipe_ingredients_text := recipe_ingredients_text + map['input_text'] + '\n' for map in recipe_ingredient_maps]
+    [recipe_ingredients_text := \
+        recipe_ingredients_text + map['input_text'] + \
+        ('\n' if i < len(recipe_ingredient_maps) - 1 else '') \
+        for i, map in enumerate(recipe_ingredient_maps)]
+
     return render_template(
         'recipes/edit.html',
         recipe=recipe,
