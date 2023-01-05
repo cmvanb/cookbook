@@ -69,6 +69,7 @@ def add():
     if request.method == 'POST':
         error = None
 
+        # TODO: Extract validation logic to function(s).
         title = request.form['title']
         author = request.form['author']
         description = request.form['description']
