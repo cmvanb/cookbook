@@ -50,6 +50,45 @@ def get_recipe_ingredient_maps(recipe_id):
 
     return recipe_ingredient_maps
 
+def validate_recipe(title, author, description, source_url, servings, prep_time,
+                    cook_time, ingredients, instructions, image):
+    # TODO: Make some of these optional.
+    if not title:
+        return 'Title is required.'
+    if not author:
+        return 'Author is required.'
+    if not description:
+        return 'Description is required.'
+    if not source_url:
+        return 'Source URL is required.'
+    if not servings:
+        return 'Servings is required.'
+    if not prep_time:
+        return 'Prep Time is required.'
+    if not cook_time:
+        return 'Cook Time is required.'
+    if not ingredients:
+        return 'Ingredients is required.'
+    if not instructions:
+        return 'Instructions is required.'
+    if not image:
+        return 'Image is required.'
+
+    # TODO: Perform validation on:
+    # Source URL
+    # Servings
+    # Prep Time
+    # Cook Time
+    # Tags
+    # Ingredients
+
+    if image.filename == '':
+        return 'Non-existent image was selected.'
+    elif not file_allowed(image):
+        return 'Image format not allowed.'
+
+    return None
+
 @bp.route('')
 @login_required
 def index():
@@ -67,78 +106,39 @@ def index():
 @login_required
 def add():
     if request.method == 'POST':
-        error = None
-
-        # TODO: Extract validation logic to function(s).
-        title = request.form['title']
-        author = request.form['author']
-        description = request.form['description']
-        source_url = request.form['source_url']
-        servings = request.form['servings']
-        image_path = None
-        prep_time = request.form['prep_time']
-        cook_time = request.form['cook_time']
-        ingredients = request.form['ingredients']
+        user         = g.user['id']
+        title        = request.form['title']
+        author       = request.form['author']
+        description  = request.form['description']
+        source_url   = request.form['source_url']
+        servings     = request.form['servings']
+        prep_time    = request.form['prep_time']
+        cook_time    = request.form['cook_time']
+        ingredients  = request.form['ingredients']
         instructions = request.form['instructions']
+        image        = request.files['image']
 
-        # Validate image.
-        image = request.files['image']
-        if image is not None:
-            if image.filename == '':
-                error = 'Non-existent image was selected.'
-            elif not file_allowed(image):
-                error = 'Image format not allowed.'
-            else:
-                filename = str(uuid.uuid4())
-
-                # Save image to disk.
-                image.save(os.path.join(current_app.static_folder, 'user_images', filename))
-
-                # Store relative path in database.
-                image_path = os.path.join('user_images', filename)
-        else:
-            error = 'Image not in request.'
-
-        # TODO: Perform validation on:
-        # Source URL
-        # Servings
-        # Prep Time
-        # Cook Time
-        # Tags
-        # Ingredients
-
-        if not title:
-            error = 'Title is required.'
-        elif not author:
-            error = 'Author is required.'
-        elif not description:
-            error = 'Description is required.'
-        elif not source_url:
-            error = 'Source URL is required.'
-        elif image_path == None:
-            error = 'Image could not be uploaded.'
-        elif not servings:
-            error = 'Servings is required.'
-        elif not prep_time:
-            error = 'Prep Time is required.'
-        elif not cook_time:
-            error = 'Cook Time is required.'
-        elif not ingredients:
-            error = 'Ingredients is required.'
-        elif not instructions:
-            error = 'Instructions is required.'
-
-        # Parse ingredients.
-        ingredient_parser = IngredientParser()
-        parsed_ingredients = ingredient_parser.Parse(ingredients)
+        error = validate_recipe(
+            title, author, description, source_url, servings, prep_time,
+            cook_time, ingredients, instructions, image,
+        )
 
         if error is not None:
             flash(error)
             return render_template('recipes/add.html')
 
-        db = get_db()
+        # Parse ingredients.
+        ingredient_parser = IngredientParser()
+        parsed_ingredients = ingredient_parser.Parse(ingredients)
+
+        # Save image to disk and save relative path for storage in database.
+        image = request.files['image']
+        image_file_name = str(uuid.uuid4())
+        image.save(os.path.join(current_app.static_folder, 'user_images', image_file_name))
+        image_path = os.path.join('user_images', image_file_name)
 
         # Insert recipe row.
+        db = get_db()
         sql = """
             INSERT INTO recipe (
                 user_id, title, author, description, source_url,
@@ -147,9 +147,10 @@ def add():
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             RETURNING id
             """
-        args = (g.user['id'], title, author, description, source_url,
-            image_path, servings, prep_time, cook_time, instructions)
-        recipe = db.execute(sql, args).fetchone()
+        recipe = db.execute(sql, (
+                user, title, author, description, source_url, image_path,
+                servings, prep_time, cook_time, instructions
+            )).fetchone()
         db.commit()
 
         recipe_id = recipe['id']
@@ -176,11 +177,12 @@ def add():
 @bp.route('/edit/<int:id>', methods=('GET', 'POST'))
 @login_required
 def edit(id):
-    recipe = get_recipe(id)
-
     if request.method == 'POST':
-        return redirect(url_for('recipes.view', id=recipe_id))
+        # TODO: Implement.
 
+        return redirect(url_for('recipes.view', id=id))
+
+    recipe = get_recipe(id)
     recipe_ingredient_maps = get_recipe_ingredient_maps(id)
 
     # TODO: Replace this hack with proper ingredient parsing.
