@@ -13,6 +13,8 @@ def init_db_command():
     init_db()
     click.echo('Initialized the database.')
 
+# TODO: Add command to populate db with demo data.
+
 def init_db():
     db = get_db()
 

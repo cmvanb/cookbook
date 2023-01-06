@@ -1,25 +1,30 @@
+#-------------------------------------------------------------------------------
+# Recipes Views
+#-------------------------------------------------------------------------------
+
 import os
 import uuid
 
-from flask import (
-    Blueprint, current_app, flash, g, redirect, render_template, request, url_for, session
-    )
+from flask import Blueprint, current_app, flash, g, redirect, render_template, request, url_for, session
 from werkzeug.exceptions import abort
 
-from cookbook.auth import login_required
+from cookbook.auth.utils import login_required
 from cookbook.db import get_db
 from cookbook.parsing.ingredient_parser import IngredientParser
+from cookbook.recipes.utils import image_format_allowed
 
-# TODO: Extract to utility?
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+# Recipes Blueprint
+#-------------------------------------------------------------------------------
+blueprint = Blueprint(
+    'recipes', __name__, 
+    url_prefix='/recipes', 
+    static_folder='static', 
+    template_folder='templates',
+)
 
-def file_allowed(file):
-    return file.mimetype[0:5] == 'image' \
-           and '.' in file.filename \
-           and file.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-bp = Blueprint('recipes', __name__, url_prefix='/recipes')
-
+# TODO: Extract.
+# Retrieve a recipe by its ID.
+#-------------------------------------------------------------------------------
 def get_recipe(id):
     db = get_db()
     sql = """
@@ -33,10 +38,13 @@ def get_recipe(id):
     recipe = db.execute(sql, args).fetchone()
 
     if recipe is None:
-        abort(404, f"Recipe id {id} not found.")
+        abort(404, f'Recipe id {id} not found.')
 
     return recipe
 
+# TODO: Extract.
+# Retrieve a recipe's ingredient maps by its ID.
+#-------------------------------------------------------------------------------
 def get_recipe_ingredient_maps(recipe_id):
     db = get_db()
     sql = """
@@ -50,6 +58,8 @@ def get_recipe_ingredient_maps(recipe_id):
 
     return recipe_ingredient_maps
 
+# Validation logic.
+#-------------------------------------------------------------------------------
 def validate_recipe(title, author, description, source_url, servings, prep_time,
                     cook_time, ingredients, instructions, image):
     # TODO: Make some of these optional.
@@ -84,12 +94,14 @@ def validate_recipe(title, author, description, source_url, servings, prep_time,
 
     if image.filename == '':
         return 'Non-existent image was selected.'
-    elif not file_allowed(image):
+    elif not image_format_allowed(image):
         return 'Image format not allowed.'
 
     return None
 
-@bp.route('')
+# Index view.
+#-------------------------------------------------------------------------------
+@blueprint.route('')
 @login_required
 def index():
     db = get_db()
@@ -100,9 +112,11 @@ def index():
         """
     args = (session['user_id'], )
     recipes = db.execute(sql, args).fetchall()
-    return render_template('recipes/index.html', recipes=recipes)
+    return render_template('index.html', recipes=recipes)
 
-@bp.route('/add', methods=('GET', 'POST'))
+# Add recipe view.
+#-------------------------------------------------------------------------------
+@blueprint.route('/add', methods=('GET', 'POST'))
 @login_required
 def add():
     if request.method == 'POST':
@@ -125,7 +139,7 @@ def add():
 
         if error is not None:
             flash(error)
-            return render_template('recipes/add.html')
+            return render_template('add.html')
 
         # Parse ingredients.
         ingredient_parser = IngredientParser()
@@ -134,6 +148,7 @@ def add():
         # Save image to disk and save relative path for storage in database.
         image = request.files['image']
         image_file_name = str(uuid.uuid4())
+        # TODO: Use blueprint static folder.
         image.save(os.path.join(current_app.static_folder, 'user_images', image_file_name))
         image_path = os.path.join('user_images', image_file_name)
 
@@ -159,7 +174,7 @@ def add():
 
         # Insert recipe_ingredient_map rows.
         for ingredient in parsed_ingredients:
-            print(f"{ingredient.count} {ingredient.unit.long_name} of {ingredient.name}")
+            print(f'{ingredient.count} {ingredient.unit.long_name} of {ingredient.name}')
             sql = """
                 INSERT INTO recipe_ingredient_map (
                     recipe_id, input_text, count
@@ -170,17 +185,19 @@ def add():
             db.execute(sql, args)
             db.commit()
 
-        return redirect(url_for('recipes.view', id=recipe_id))
+        return redirect(url_for('.view', id=recipe_id))
 
-    return render_template('recipes/add.html')
+    return render_template('add.html')
 
-@bp.route('/edit/<int:id>', methods=('GET', 'POST'))
+# Edit recipe view.
+#-------------------------------------------------------------------------------
+@blueprint.route('/edit/<int:id>', methods=('GET', 'POST'))
 @login_required
 def edit(id):
     if request.method == 'POST':
         # TODO: Implement.
 
-        return redirect(url_for('recipes.view', id=id))
+        return redirect(url_for('.view', id=id))
 
     recipe = get_recipe(id)
     recipe_ingredient_maps = get_recipe_ingredient_maps(id)
@@ -193,24 +210,28 @@ def edit(id):
         for i, map in enumerate(recipe_ingredient_maps)]
 
     return render_template(
-        'recipes/edit.html',
+        'edit.html',
         recipe=recipe,
         recipe_ingredients_text=recipe_ingredients_text
         )
 
-@bp.route('/view/<int:id>')
+# View recipe view.
+#-------------------------------------------------------------------------------
+@blueprint.route('/view/<int:id>')
 @login_required
 def view(id):
     recipe = get_recipe(id)
     recipe_ingredient_maps = get_recipe_ingredient_maps(id)
 
     return render_template(
-        'recipes/view.html',
+        'view.html',
         recipe=recipe,
         recipe_ingredient_maps=recipe_ingredient_maps
         )
 
-@bp.route('/delete/<int:id>', methods=('POST',))
+# Delete recipe view.
+#-------------------------------------------------------------------------------
+@blueprint.route('/delete/<int:id>', methods=('POST',))
 @login_required
 def delete(id):
     # To check whether recipe exists, will abort otherwise.
@@ -222,5 +243,5 @@ def delete(id):
     db.execute('DELETE FROM recipe WHERE id = ?', (id,))
     db.commit()
 
-    return redirect(url_for('recipes.index'))
+    return redirect(url_for('.index'))
 

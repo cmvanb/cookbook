@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block custom_css %}
-<link href="{{ url_for('static', filename='recipe-edit.css') }}" rel="stylesheet">
+<link href="{{ url_for('recipes.static', filename='edit.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block custom_js %}
-<script src="{{ url_for('static', filename='edit.js') }}" type="text/javascript"></script>
+<script src="{{ url_for('recipes.static', filename='edit.js') }}" type="text/javascript"></script>
 {% endblock %}
 
 {% block header %}
