@@ -2,6 +2,7 @@
 
 database=instance/cookbook.sqlite
 user_images_dir=cookbook/static/user_images
+coverage_report=.coverage
 
 if [[ -f "$database" ]]; then
     rm $database
@@ -17,6 +18,12 @@ else
     echo "$user_images_dir doesn't exist."
 fi
 
-echo 'clean.sh complete.'
+if [[ -f "$coverage_report" ]]; then
+    rm $coverage_report
+    echo "Removed $coverage_report."
+else
+    echo "$coverage_report doesn't exist."
+fi
 
+echo 'clean.sh complete.'
 
