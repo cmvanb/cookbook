@@ -41,7 +41,7 @@
             <div class="field label prefix border">
                 <i>attach_file</i>
                 <input type="text">
-                <img id="image" src="{{ url_for('static', filename=recipe['image_path']) }}">
+                <input type="file" name="image" id="image" value="{{ url_for('static', filename=recipe['image_path']) }}" required>
                 <label class="active">Image</label>
             </div>
 

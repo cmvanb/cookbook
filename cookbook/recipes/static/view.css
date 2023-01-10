@@ -1,5 +1,7 @@
 section {
     width: 320rem;
+    overflow: hidden;
+    border-radius: 0;
 }
 
 #view-recipe-image {
@@ -10,13 +12,16 @@ section {
 
 #view-recipe-attributes {
     display: flex;
-    gap: 8rem;
     margin: 16rem auto;
+    width: fit-content;
+    max-width: 420rem;
+    gap: 8rem;
     justify-content: space-evenly;
 }
 
 #view-recipe-attr {
     gap: 8rem;
+    white-space: nowrap;
 }
 
 #view-recipe-header {

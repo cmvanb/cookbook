@@ -2,8 +2,8 @@
 # Recipes parsing logic
 #-------------------------------------------------------------------------------
 
-# TODO: Extract to model layer.
 # Weight unit
+# TODO: Extract to model layer.
 #-------------------------------------------------------------------------------
 class WeightUnit():
     def __init__(self, long_name, short_name, aliases, base_equivalent_grams):

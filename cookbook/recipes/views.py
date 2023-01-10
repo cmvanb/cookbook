@@ -9,7 +9,7 @@ from flask import Blueprint, current_app, flash, g, redirect, render_template, r
 
 from cookbook.auth.utils import login_required
 from cookbook.db import get_db
-from cookbook.recipes import parsing, storage, validation, utils
+from cookbook.recipes import parsing, storage, validation
 
 # Recipes blueprint
 #-------------------------------------------------------------------------------
@@ -52,7 +52,6 @@ def add():
         error = validation.validate_recipe(
             title, author, description, source_url, servings, prep_time,
             cook_time, ingredients, instructions, image)
-
         if error is not None:
             flash(error)
             return render_template('add.html')
@@ -73,7 +72,30 @@ def add():
 @login_required
 def edit(id):
     if request.method == 'POST':
-        # TODO: Implement.
+        user_id      = g.user['id']
+        title        = request.form['title']
+        author       = request.form['author']
+        description  = request.form['description']
+        source_url   = request.form['source_url']
+        servings     = request.form['servings']
+        prep_time    = request.form['prep_time']
+        cook_time    = request.form['cook_time']
+        ingredients  = request.form['ingredients']
+        instructions = request.form['instructions']
+        image        = request.files['image']
+
+        error = validation.validate_recipe(
+            title, author, description, source_url, servings, prep_time,
+            cook_time, ingredients, instructions, image)
+        if error is not None:
+            flash(error)
+            return render_template('add.html')
+
+        parsed_ingredients = parsing.parse_ingredients(ingredients)
+
+        storage.edit_recipe(
+            id, user_id, title, author, description, source_url, servings,
+            prep_time, cook_time, instructions, image, parsed_ingredients)
 
         return redirect(url_for('.view', id=id))
 

@@ -60,12 +60,12 @@ def get_recipe_ingredient_maps(recipe_id):
     return db.execute(sql, args).fetchall()
 
 # Retrieve recipe's ingredients by ID as a flattened list.
+# TODO: Remove this hack by implementing proper ingredient parsing at ingest.
 #-------------------------------------------------------------------------------
 def get_recipe_ingredients_text(recipe_id):
     maps = get_recipe_ingredient_maps(recipe_id)
     recipe_ingredients_text = ''
 
-    # TODO: Remove this hack by implementing proper ingredient parsing at ingest.
     [recipe_ingredients_text := \
         recipe_ingredients_text + m['input_text'] + \
         ('\n' if i < len(maps) - 1 else '') \
@@ -77,14 +77,11 @@ def get_recipe_ingredients_text(recipe_id):
 #-------------------------------------------------------------------------------
 def add_recipe(user_id, title, author, description, source_url, servings,
                prep_time, cook_time, instructions, image, parsed_ingredients):
-    
-    # Save image to disk and save relative path for storage in database.
-    image_file_name = str(uuid.uuid4())
-    image.save(os.path.join(current_app.static_folder, 'user_images', image_file_name))
-    image_path = os.path.join('user_images', image_file_name)
+    image_path = save_user_image(image)
     
     db = get_db()
 
+    # Add recipe.
     sql = """
         INSERT INTO recipe (
             user_id, title, author, description, source_url,
@@ -101,8 +98,7 @@ def add_recipe(user_id, title, author, description, source_url, servings,
 
     recipe_id = recipe['id']
 
-    # TODO: If new ingredient(s) detected, insert ingredient row(s).
-
+    # Add ingredient maps.
     for ingredient in parsed_ingredients:
         sql = """
             INSERT INTO recipe_ingredient_map (
@@ -117,15 +113,66 @@ def add_recipe(user_id, title, author, description, source_url, servings,
 
     return recipe_id
 
-# TODO: Delete associated images.
-# Delete existing recipe.
+# Edit existing recipe.
 #-------------------------------------------------------------------------------
-def delete_recipe(recipe_id, user_id):
-    # To check whether recipe exists, will abort otherwise.
-    get_recipe(recipe_id, user_id)
+def edit_recipe(recipe_id, user_id, title, author, description, source_url,
+                servings, prep_time, cook_time, instructions, image,
+                parsed_ingredients):
+    recipe = get_recipe(recipe_id, user_id)
+
+    delete_user_image(recipe['image_path'])
+    image_path = save_user_image(image)
 
     db = get_db()
 
+    # Update recipe.
+    sql = """
+        UPDATE recipe
+        SET (
+            title, author, description, source_url, image_path, servings,
+            prep_time, cook_time, instructions
+            ) = (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        WHERE id = ? AND user_id = ?
+        """
+    args = (title, author, description, source_url, image_path, servings,
+        prep_time, cook_time, instructions, recipe_id, user_id)
+
+    db.execute(sql, args)
+    db.commit()
+
+    # Delete pre-existing ingredient maps.
+    sql = """
+        DELETE FROM recipe_ingredient_map
+        WHERE recipe_id = ?
+        """
+    args = (recipe_id, )
+
+    db.execute(sql, args)
+    db.commit()
+
+    # Add updated ingredient maps.
+    for ingredient in parsed_ingredients:
+        sql = """
+            INSERT INTO recipe_ingredient_map (
+                recipe_id, input_text, count
+                )
+            VALUES (?, ?, ?)
+            """
+        args = (recipe_id, ingredient.name, ingredient.count)
+
+        db.execute(sql, args)
+        db.commit()
+
+# Delete existing recipe.
+#-------------------------------------------------------------------------------
+def delete_recipe(recipe_id, user_id):
+    recipe = get_recipe(recipe_id, user_id)
+
+    delete_user_image(recipe['image_path'])
+
+    db = get_db()
+
+    # Delete recipe.
     sql = """
         DELETE FROM recipe 
         WHERE id = ? AND user_id = ?
@@ -134,4 +181,32 @@ def delete_recipe(recipe_id, user_id):
 
     db.execute(sql, args)
     db.commit()
+
+    # Delete ingredient maps.
+    sql = """
+        DELETE FROM recipe_ingredient_map
+        WHERE recipe_id = ?
+        """
+    args = (recipe_id, )
+
+    db.execute(sql, args)
+    db.commit()
+
+# Save user uploaded image.
+#-------------------------------------------------------------------------------
+def save_user_image(image):
+    file_name = str(uuid.uuid4())
+    path = os.path.join('user_images', file_name)
+
+    image.save(os.path.join(current_app.static_folder, path))
+
+    return path
+
+# Delete user uploaded image.
+#-------------------------------------------------------------------------------
+def delete_user_image(image_path):
+    path = os.path.join(current_app.static_folder, image_path)
+
+    if os.path.exists(path):
+        os.remove(path)
 
