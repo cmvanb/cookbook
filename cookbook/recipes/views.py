@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Recipes Views
+# Recipes views
 #-------------------------------------------------------------------------------
 
 import os
@@ -10,10 +10,10 @@ from werkzeug.exceptions import abort
 
 from cookbook.auth.utils import login_required
 from cookbook.db import get_db
-from cookbook.parsing.ingredient_parser import IngredientParser
 from cookbook.recipes.utils import image_format_allowed
+from cookbook.recipes.parsing import parse_ingredients
 
-# Recipes Blueprint
+# Recipes blueprint
 #-------------------------------------------------------------------------------
 blueprint = Blueprint(
     'recipes', __name__, 
@@ -141,9 +141,7 @@ def add():
             flash(error)
             return render_template('add.html')
 
-        # Parse ingredients.
-        ingredient_parser = IngredientParser()
-        parsed_ingredients = ingredient_parser.Parse(ingredients)
+        parsed_ingredients = parse_ingredients(ingredients)
 
         # Save image to disk and save relative path for storage in database.
         image = request.files['image']
