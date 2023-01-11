@@ -36,7 +36,7 @@ def index():
 @blueprint.route('/add', methods=('GET', 'POST'))
 @login_required
 def add():
-    if request.method == 'POST':
+    def post():
         user_id      = g.user['id']
         title        = request.form['title']
         author       = request.form['author']
@@ -52,9 +52,9 @@ def add():
         error = validation.validate_recipe(
             title, author, description, source_url, servings, prep_time,
             cook_time, ingredients, instructions, image)
+
         if error is not None:
-            flash(error)
-            return render_template('add.html')
+            return (None, error)
 
         parsed_ingredients = parsing.parse_ingredients(ingredients)
 
@@ -62,7 +62,15 @@ def add():
             user_id, title, author, description, source_url, servings,
             prep_time, cook_time, instructions, image, parsed_ingredients)
 
-        return redirect(url_for('.view', id=recipe_id))
+        return (recipe_id, None)
+
+    if request.method == 'POST':
+        recipe_id, error = post()
+
+        if error is None:
+            return redirect(url_for('.view', id=recipe_id))
+        else:
+            flash(error)
 
     return render_template('add.html')
 
@@ -71,8 +79,9 @@ def add():
 @blueprint.route('/edit/<int:id>', methods=('GET', 'POST'))
 @login_required
 def edit(id):
-    if request.method == 'POST':
-        user_id      = g.user['id']
+    user_id = session['user_id']
+
+    def post():
         title        = request.form['title']
         author       = request.form['author']
         description  = request.form['description']
@@ -87,9 +96,9 @@ def edit(id):
         error = validation.validate_recipe(
             title, author, description, source_url, servings, prep_time,
             cook_time, ingredients, instructions, image)
+
         if error is not None:
-            flash(error)
-            return render_template('add.html')
+            return error
 
         parsed_ingredients = parsing.parse_ingredients(ingredients)
 
@@ -97,9 +106,15 @@ def edit(id):
             id, user_id, title, author, description, source_url, servings,
             prep_time, cook_time, instructions, image, parsed_ingredients)
 
-        return redirect(url_for('.view', id=id))
+        return None
 
-    user_id = session['user_id']
+    if request.method == 'POST':
+        error = post()
+
+        if error is None:
+            return redirect(url_for('.view', id=id))
+        else:
+            flash(error)
 
     recipe = storage.get_recipe(id, user_id)
     recipe_ingredients_text = storage.get_recipe_ingredients_text(id)

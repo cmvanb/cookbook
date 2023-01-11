@@ -1,7 +1,7 @@
 import os
 import tempfile
-
 import pytest
+
 from cookbook import create_app
 from cookbook.db import get_db, init_db
 

@@ -39,7 +39,7 @@ def validate_recipe(title, author, description, source_url, servings, prep_time,
     if not image:
         return 'Image is required.'
 
-    # TODO: Perform validation on:
+    # TODO: Perform further validation on:
     # Source URL
     # Servings
     # Prep Time
@@ -47,9 +47,7 @@ def validate_recipe(title, author, description, source_url, servings, prep_time,
     # Tags
     # Ingredients
 
-    if image.filename == '':
-        return 'Non-existent image was selected.'
-    elif not image_allowed(image):
+    if not image_allowed(image):
         return 'Image not allowed.'
 
     return None
