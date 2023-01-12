@@ -8,7 +8,7 @@ INSERT INTO recipe
     servings, prep_time, cook_time, instructions)
 VALUES 
     (1, '2018-01-01 00:00:00', 'test recipe', 'chef ramsay', 'description',
-    'http://example.com', 'user_images/whatever', 2, 5, 10, 'instructions go here');
+    'http://example.com', 'user_images/whatever.jpg', 2, 5, 10, 'instructions go here');
 
 INSERT INTO recipe_ingredient_map (recipe_id, input_text, count)
 VALUES

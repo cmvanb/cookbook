@@ -1,14 +1,17 @@
-import pytest
+#-------------------------------------------------------------------------------
+# Recipes tests
+#-------------------------------------------------------------------------------
+
 import io
+import os
+import pytest
 
 from pathlib import Path
 
 from cookbook.db import get_db
 
-
-user_images = Path(__file__).parent / 'user_images'
-
-
+# Data generators for testing.
+#-------------------------------------------------------------------------------
 def image_data(
     image_bytes = b'bla bla bla', 
     image_file_name = 'cool.jpg'):
@@ -42,7 +45,8 @@ def recipe_data(
         'instructions': instructions,
     }
 
-
+# Test index route.
+#-------------------------------------------------------------------------------
 def test_index(client, auth):
     response = client.get('/recipes', follow_redirects=True)
     assert b'Log In' in response.data
@@ -57,10 +61,8 @@ def test_index(client, auth):
     assert b'href=\'/recipes/add\'' in response.data
     assert b'href=\'/recipes/view/1\'' in response.data
 
-
-# TODO: Test view route.
-
-
+# Test auth.
+#-------------------------------------------------------------------------------
 @pytest.mark.parametrize('path', (
     '/recipes/add',
     '/recipes/edit/1',
@@ -69,7 +71,6 @@ def test_index(client, auth):
 def test_login_required(client, path):
     response = client.post(path)
     assert response.headers['Location'] == '/auth/login'
-
 
 def test_authentication_required(app, client, auth):
     with app.app_context():
@@ -86,7 +87,8 @@ def test_authentication_required(app, client, auth):
     # Current user doesn't see other user's view link.
     assert b'href=\'/recipes/view/1\'' not in client.get('/').data
 
-
+# Recipes must exist to be operated on.
+#-------------------------------------------------------------------------------
 def test_exists_required(client, auth):
     auth.login()
     response = client.post('/recipes/delete/2')
@@ -97,7 +99,8 @@ def test_exists_required(client, auth):
     assert response.status_code == 404
     assert b'Recipe id 2 not found' in response.data
 
-
+# Recipes must be added to the database.
+#-------------------------------------------------------------------------------
 def test_add(client, auth, app):
     auth.login()
     assert client.get('/recipes/add').status_code == 200
@@ -110,7 +113,8 @@ def test_add(client, auth, app):
         count = db.execute('SELECT COUNT(id) FROM recipe').fetchone()[0]
         assert count == 2
 
-
+# Recipes must be viewable.
+#-------------------------------------------------------------------------------
 def test_view(client, auth, app):
     auth.login()
 
@@ -122,7 +126,8 @@ def test_view(client, auth, app):
 
     assert b'1tbsp nonsense' in response.data
 
-
+# Recipes must be edited in the database.
+#-------------------------------------------------------------------------------
 def test_edit(client, auth, app):
     auth.login()
     assert client.get('/recipes/edit/1').status_code == 200
@@ -134,7 +139,8 @@ def test_edit(client, auth, app):
         post = db.execute('SELECT * FROM recipe WHERE id = 1').fetchone()
         assert post['title'] == 'different recipe'
 
-
+# Recipes must be validated when added or edited.
+#-------------------------------------------------------------------------------
 @pytest.mark.parametrize('path', (
     '/recipes/add',
     '/recipes/edit/1',
@@ -186,8 +192,15 @@ def test_add_edit_validate(client, auth, path):
     response = client.post(path, data=recipe)
     assert b'Instructions is required.' in response.data
 
+# Recipes must be deletable.
+#-------------------------------------------------------------------------------
+
+# TODO: Do we need this?
+user_images = Path(__file__).parent / 'user_images'
 
 def test_delete(client, auth, app):
+    # assert os.path.exists(os.path.join(user_images, 'whatever.jpg'))
+
     auth.login()
     response = client.post('/recipes/delete/1')
     assert response.headers['Location'] == '/recipes'
@@ -198,4 +211,6 @@ def test_delete(client, auth, app):
         assert recipe is None
 
     # TODO: Test whether associated image is deleted.
+
+    # assert not os.path.exists(os.path.join(user_images, 'whatever.jpg'))
 
