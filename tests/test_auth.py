@@ -39,6 +39,9 @@ def test_login(client, auth):
     response = auth.login()
     assert response.headers['Location'] == '/recipes'
 
+    reponse = client.get('/auth/login').status_code
+    assert response.headers['Location'] == '/recipes'
+
     with client:
         client.get('/recipes')
         assert session['user_id'] == 1
