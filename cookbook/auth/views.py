@@ -36,6 +36,8 @@ def register():
 
         return None
 
+    status = 200
+
     if request.method == 'POST':
         error = post()
 
@@ -43,9 +45,9 @@ def register():
             return redirect(url_for('.login'))
         else:
             flash(error)
-            return render_template('register.html'), 400
+            status = 400
 
-    return render_template('register.html')
+    return render_template('register.html'), status
 
 # Login view.
 #-------------------------------------------------------------------------------
@@ -60,6 +62,8 @@ def login():
 
         return user, error
 
+    status = 200
+
     if request.method == 'POST':
         user, error = post()
 
@@ -70,13 +74,12 @@ def login():
             return redirect(url_for('recipes.index'))
         else:
             flash(error)
-
-            return render_template('login.html'), 400
+            status = 400
 
     elif g.user is not None:
         return redirect(url_for('recipes.index'))
 
-    return render_template('login.html')
+    return render_template('login.html'), status
 
 # Logout view.
 #-------------------------------------------------------------------------------

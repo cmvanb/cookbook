@@ -64,6 +64,8 @@ def add():
 
         return (recipe_id, None)
 
+    status = 200
+
     if request.method == 'POST':
         recipe_id, error = post()
 
@@ -71,6 +73,7 @@ def add():
             return redirect(url_for('.view', id=recipe_id))
         else:
             flash(error)
+            status = 400
 
     return render_template('add.html')
 
@@ -108,6 +111,8 @@ def edit(id):
 
         return None
 
+    status = 200
+
     if request.method == 'POST':
         error = post()
 
@@ -115,6 +120,7 @@ def edit(id):
             return redirect(url_for('.view', id=id))
         else:
             flash(error)
+            status = 400
 
     recipe = storage.get_recipe(id, user_id)
     recipe_ingredients_text = storage.get_recipe_ingredients_text(id)
@@ -122,7 +128,7 @@ def edit(id):
     return render_template(
         'edit.html',
         recipe=recipe,
-        recipe_ingredients_text=recipe_ingredients_text)
+        recipe_ingredients_text=recipe_ingredients_text), status
 
 # View recipe view.
 #-------------------------------------------------------------------------------
