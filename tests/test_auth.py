@@ -49,8 +49,8 @@ def test_login(client, auth):
 
 
 @pytest.mark.parametrize(('email', 'password', 'message'), (
-    ('a@gmail.com', 'test', b'Incorrect email.'),
-    ('test@gmail.com', 'a', b'Incorrect password.'),
+    ('a@gmail.com', 'test', b'Invalid email.'),
+    ('test@gmail.com', 'a', b'Invalid password.'),
     ))
 def test_login_validate_input(auth, email, password, message):
     response = auth.login(email, password)
