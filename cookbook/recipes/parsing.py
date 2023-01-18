@@ -33,14 +33,27 @@ class Ingredient():
         self.unit = unit
         self.modifier = modifier
 
-# Parse ingredients list
+# Parse ingredients to data models.
 #-------------------------------------------------------------------------------
-def parse_ingredients(ingredients_text):
+def parse_ingredients(ingredients_input):
     result = []
-    lines = ingredients_text.split('\n')
+    lines = ingredients_input.split('\n')
 
     for line in lines:
         result.append(Ingredient(line, 1, WeightUnits['grams']))
 
     return result
+
+# Parse ingredients to list form.
+#-------------------------------------------------------------------------------
+def parse_ingredients_list(ingredient_maps):
+    return [m['input_text'].strip() \
+        for m in ingredient_maps]
+
+# Parse instructions to list form.
+#-------------------------------------------------------------------------------
+def parse_instructions_list(instructions):
+    return [i.strip()
+        for i in instructions.split('\n')
+        if len(i.strip()) > 0]
 

@@ -16,6 +16,10 @@
                 Delete Recipe
             </button>
         </form>
+        <button onclick="location.href='{{ url_for('recipes.export', id=recipe['id']) }}'">
+            <i>download</i>
+            Export Recipe
+        </button>
         <div class="max"></div>
         <button onclick="location.href='{{ url_for('recipes.index') }}'">
             <i>close</i>

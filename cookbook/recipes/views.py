@@ -5,11 +5,11 @@
 import os
 import uuid
 
-from flask import Blueprint, current_app, flash, g, redirect, render_template, request, url_for, session
+from flask import Blueprint, current_app, flash, g, redirect, render_template, request, url_for, session, send_file
 
 from cookbook.auth.utils import login_required
 from cookbook.db import get_db
-from cookbook.recipes import parsing, storage, validation
+from cookbook.recipes import parsing, storage, validation, exporter
 
 # Recipes blueprint
 #-------------------------------------------------------------------------------
@@ -155,4 +155,22 @@ def delete(id):
     storage.delete_recipe(id, user_id)
 
     return redirect(url_for('.index'))
+
+# Export reciew view.
+#-------------------------------------------------------------------------------
+@blueprint.route('/export/<int:id>')
+@login_required
+def export(id):
+    user_id = session['user_id']
+
+    recipe = storage.get_recipe(id, user_id)
+    recipe_ingredient_maps = storage.get_recipe_ingredient_maps(id)
+
+    ingredients_list = parsing.parse_ingredients_list(recipe_ingredient_maps)
+    instructions_list = parsing.parse_instructions_list(recipe['instructions'])
+
+    file_name = exporter.recipe_file_name(recipe['title'])
+    yaml = exporter.recipe_to_yaml(recipe, ingredients_list, instructions_list)
+
+    return send_file(yaml, download_name=file_name, as_attachment=True)
 
