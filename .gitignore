@@ -17,3 +17,6 @@ venv/
 # Test artifacts.
 .coverage
 
+# HTTPie artifacts.
+session.json
+
