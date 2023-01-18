@@ -7,7 +7,6 @@ export class ResizingTextArea {
     }
 
     constructor(field) {
-        console.log('TEXTAREA')
         this.field = field;
 
         this.textArea = this.field.getElementsByTagName('textarea')[0];

@@ -57,11 +57,11 @@ def test_index(client, auth):
     response = client.get('/recipes')
     assert b'Log Out' in response.data
     assert b'test recipe' in response.data
-    assert b'user_images/whatever' in response.data
+    assert b'user_images/whatever.jpg' in response.data
     assert b'href=\'/recipes/add\'' in response.data
     assert b'href=\'/recipes/view/1\'' in response.data
 
-# Test auth.
+# Authentication is required.
 #-------------------------------------------------------------------------------
 @pytest.mark.parametrize('path', (
     '/recipes/add',
@@ -72,7 +72,9 @@ def test_login_required(client, path):
     response = client.post(path)
     assert response.headers['Location'] == '/auth/login'
 
-def test_authentication_required(app, client, auth):
+# Unauthenticated access is prevented.
+#-------------------------------------------------------------------------------
+def test_data_privacy(app, client, auth):
     with app.app_context():
         db = get_db()
         db.execute('UPDATE recipe SET user_id = 2 WHERE id = 1')
@@ -80,9 +82,10 @@ def test_authentication_required(app, client, auth):
 
     auth.login()
 
-    # Current user can't modify other user's recipe.
+    # Current user can't access other user's recipe.
     assert client.post('/recipes/edit/1', data=recipe_data()).status_code == 404
     assert client.post('/recipes/delete/1').status_code == 404
+    assert client.get('/recipes/view/1').status_code == 404
 
     # Current user doesn't see other user's view link.
     assert b'href=\'/recipes/view/1\'' not in client.get('/').data
@@ -119,11 +122,7 @@ def test_view(client, auth, app):
     auth.login()
 
     response = client.get('/recipes/view/1')
-
     assert response.status_code == 200
-
-    print(response.data)
-
     assert b'1tbsp nonsense' in response.data
 
 # Recipes must be edited in the database.
@@ -195,7 +194,7 @@ def test_add_edit_validate(client, auth, path):
 # Recipes must be deletable.
 #-------------------------------------------------------------------------------
 
-# TODO: Do we need this?
+# NOTE: Do we need this?
 user_images = Path(__file__).parent / 'user_images'
 
 def test_delete(client, auth, app):
