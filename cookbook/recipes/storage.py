@@ -195,12 +195,15 @@ def delete_recipe(recipe_id, user_id):
 # Save user uploaded image.
 #-------------------------------------------------------------------------------
 def save_user_image(image):
+    directory = os.path.join(current_app.static_folder, 'user_images')
+    if not os.path.exists(directory):
+        os.mkdir(directory)
+
     file_name = str(uuid.uuid4())
-    path = os.path.join('user_images', file_name)
 
-    image.save(os.path.join(current_app.static_folder, path))
+    image.save(os.path.join(directory, file_name))
 
-    return path
+    return os.path.join('user_images', file_name)
 
 # Delete user uploaded image.
 #-------------------------------------------------------------------------------
