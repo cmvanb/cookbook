@@ -7,8 +7,9 @@ INSERT INTO recipe
     (user_id, created, title, author, description, source_url, image_path,
     servings, prep_time, cook_time, instructions)
 VALUES 
-    (1, '2018-01-01 00:00:00', 'test recipe', 'chef ramsay', 'description',
-    'http://example.com', 'user_images/whatever.jpg', 2, 5, 10, 'instructions go here');
+    (1, '2018-01-01 00:00:00', 'test recipe', 'chef ramsay', 'yummy',
+    'http://example.com', 'user_images/whatever.jpg', 2, 5, 10, 'put the bla in the bla
+    then do the thing');
 
 INSERT INTO recipe_ingredient_map (recipe_id, input_text, count)
 VALUES

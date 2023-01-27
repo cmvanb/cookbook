@@ -11,7 +11,7 @@ set -euo pipefail
 # TODO: Parse command line arguments.
 
 # Detect script directory.
- SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
+SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
 # Server configuration.
 ADDRESS=127.0.0.1

@@ -13,8 +13,8 @@ from cookbook.db import get_db
 # Data generators for testing.
 #-------------------------------------------------------------------------------
 def image_data(
-    image_bytes = b'bla bla bla', 
-    image_file_name = 'cool.jpg'):
+    image_bytes = b'hopefully this is a cat image',
+    image_file_name = 'image.jpg'):
     return (io.BytesIO(image_bytes), image_file_name)
 
 def recipe_data(
@@ -27,7 +27,7 @@ def recipe_data(
     prep_time = 4,
     cook_time = 8,
     ingredients = 'six\nfive\nfour',
-    instructions = 'new instructions'
+    instructions = 'new instructions\ngo here'
     ):
     # NOTE: Hack because we can't use this function as a default value.
     if image == 'default':
@@ -44,6 +44,38 @@ def recipe_data(
         'ingredients': ingredients,
         'instructions': instructions,
     }
+
+def yaml_data(
+    title = 'test recipe',
+    author = 'chef ramsay',
+    description = 'yummy',
+    source_url = 'http://example.com',
+    servings = 2,
+    prep_time = 5,
+    cook_time = 10,
+    ingredients = '1tbsp nonsense',
+    instructions = 'put the bla in the bla\nthen do the thing',
+    yaml_file_name = 'test-recipe.yaml'
+    ):
+    ingredients_list = '\n'.join([f'- {i.strip()}'
+        for i in ingredients.split('\n')
+        if len(i.strip()) > 0])
+    instructions_list = '\n'.join([f'- {i.strip()}'
+        for i in instructions.split('\n')
+        if len(i.strip()) > 0])
+    yaml_bytes = f'''title: {title}
+author: {author}
+description: {description}
+source_url: {source_url}
+servings: {servings}
+prep_time: {prep_time}
+cook_time: {cook_time}
+ingredients:
+{ingredients_list}
+instructions:
+{instructions_list}
+'''.encode()
+    return (io.BytesIO(yaml_bytes), yaml_file_name)
 
 # Test index route.
 #-------------------------------------------------------------------------------
@@ -210,6 +242,16 @@ def test_delete(client, auth, app):
         assert recipe is None
 
     # TODO: Test whether associated image is deleted.
-
     # assert not os.path.exists(os.path.join(user_images, 'whatever.jpg'))
+
+# Recipes must be exportable.
+#-------------------------------------------------------------------------------
+def test_export(client, auth, app):
+    auth.login()
+
+    response = client.get('/recipes/export/1')
+
+    expected = yaml_data()
+
+    assert response.get_data() == expected[0].getvalue()
 

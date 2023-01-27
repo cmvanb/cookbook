@@ -47,7 +47,7 @@ def parse_ingredients(ingredients_input):
 # Parse ingredients to list form.
 #-------------------------------------------------------------------------------
 def parse_ingredients_list(ingredient_maps):
-    return [m['input_text'].strip() \
+    return [m['input_text'].strip()
         for m in ingredient_maps]
 
 # Parse instructions to list form.

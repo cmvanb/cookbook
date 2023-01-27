@@ -1,29 +1,37 @@
 #!/bin/bash
+#-------------------------------------------------------------------------------
+# Clean various development artifacts
+#-------------------------------------------------------------------------------
 
-database=instance/cookbook.sqlite
+set -euo pipefail
+
+empty_directory() {
+    if [[ -d "$1" ]]; then
+        rm $1/*
+        echo "Emptied $1."
+    else
+        echo "$1 doesn't exist."
+    fi
+}
+
+remove_file() {
+    if [[ -f "$1" ]]; then
+        rm $1
+        echo "Removed $1."
+    else
+        echo "$1 doesn't exist."
+    fi
+}
+
 user_images_dir=cookbook/static/user_images
+database=instance/cookbook.sqlite
 coverage_report=.coverage
+session_json=session.json
 
-if [[ -f "$database" ]]; then
-    rm $database
-    echo "Removed $database."
-else
-    echo "$database doesn't exist."
-fi
-
-if [[ -d "$user_images_dir" ]]; then
-    rm $user_images_dir/*
-    echo "Emptied $user_images_dir."
-else
-    echo "$user_images_dir doesn't exist."
-fi
-
-if [[ -f "$coverage_report" ]]; then
-    rm $coverage_report
-    echo "Removed $coverage_report."
-else
-    echo "$coverage_report doesn't exist."
-fi
+empty_directory $user_images_dir
+remove_file $database
+remove_file $coverage_report
+remove_file $session_json
 
 echo 'clean.sh complete.'
 
