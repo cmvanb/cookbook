@@ -51,4 +51,3 @@ def validate_recipe(title, author, description, source_url, servings, prep_time,
         return 'Image not allowed.'
 
     return None
-

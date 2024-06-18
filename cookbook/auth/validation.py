@@ -33,4 +33,3 @@ def validate_login(user, password):
         return 'Invalid password.'
 
     return None
-

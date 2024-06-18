@@ -212,4 +212,3 @@ def delete_user_image(image_path):
 
     if os.path.exists(path):
         os.remove(path)
-

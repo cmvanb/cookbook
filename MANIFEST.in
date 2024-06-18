@@ -1,6 +1,0 @@
-include cookbook/schema.sql
-graft cookbook/static
-graft cookbook/templates
-graft cookbook/parsing
-global-exclude *.pyc
-

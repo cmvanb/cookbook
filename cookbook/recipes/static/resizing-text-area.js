@@ -30,4 +30,3 @@ export class ResizingTextArea {
         this.textArea.style.height = '100%';
     }
 }
-

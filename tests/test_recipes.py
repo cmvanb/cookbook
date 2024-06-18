@@ -254,4 +254,3 @@ def test_export(client, auth, app):
     expected = yaml_data()
 
     assert response.get_data() == expected[0].getvalue()
-

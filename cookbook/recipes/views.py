@@ -173,4 +173,3 @@ def export(id):
     yaml = exporter.recipe_to_yaml(recipe, ingredients_list, instructions_list)
 
     return send_file(yaml, download_name=file_name, as_attachment=True)
-

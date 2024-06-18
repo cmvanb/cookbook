@@ -57,4 +57,3 @@ CREATE TABLE recipe_ingredient_map (
     FOREIGN KEY (recipe_id) REFERENCES recipe (id)
     -- FOREIGN KEY (ingredient_id) REFERENCES ingredient (id)
 );
-

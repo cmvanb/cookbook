@@ -50,4 +50,3 @@ def get_user_by_email(email):
     args = (email, )
 
     return db.execute(sql, args).fetchone()
-

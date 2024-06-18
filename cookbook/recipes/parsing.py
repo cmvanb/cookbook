@@ -56,4 +56,3 @@ def parse_instructions_list(instructions):
     return [i.strip()
         for i in instructions.split('\n')
         if len(i.strip()) > 0]
-

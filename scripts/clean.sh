@@ -34,4 +34,3 @@ remove_file $coverage_report
 remove_file $session_json
 
 echo 'clean.sh complete.'
-
