@@ -1,0 +1,16 @@
+services:
+  sqlite3:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./instance/:/root/db/
+
+  app:
+    build: .
+    ports:
+      - 5000:80
+    volumes:
+      - ./instance/:/app/instance/
+    depends_on:
+      - sqlite3
