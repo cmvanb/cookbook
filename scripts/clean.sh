@@ -5,32 +5,45 @@
 
 set -euo pipefail
 
-empty_directory() {
-    if [[ -d "$1" ]]; then
-        rm $1/*
-        echo "Emptied $1."
-    else
-        echo "$1 doesn't exist."
+# Empty directories.
+#-------------------------------------------------------------------------------
+declare -a dirs=(
+    "cookbook/static/user_images"
+)
+
+for dir in "${dirs[@]}"; do
+    if [[ -d "$dir" ]]; then
+        rm "$dir"/*
+        echo "Emptied $dir."
     fi
-}
+done
 
-remove_file() {
-    if [[ -f "$1" ]]; then
-        rm $1
-        echo "Removed $1."
-    else
-        echo "$1 doesn't exist."
+# Remove directories.
+#-------------------------------------------------------------------------------
+declare -a dirs=(
+    ".pytest_cache"
+)
+
+for dir in "${dirs[@]}"; do
+    if [[ -d "$dir" ]]; then
+        rm -r "$dir"
+        echo "Removed $dir."
     fi
-}
+done
 
-user_images_dir=cookbook/static/user_images
-database=instance/cookbook.sqlite
-coverage_report=.coverage
-session_json=session.json
+# Remove files.
+#-------------------------------------------------------------------------------
+declare -a files=(
+    "instance/cookbook.sqlite"
+    ".coverage"
+    "session.json"
+)
 
-empty_directory $user_images_dir
-remove_file $database
-remove_file $coverage_report
-remove_file $session_json
+for file in "${files[@]}"; do
+    if [[ -f "$file" ]]; then
+        rm "$file"
+        echo "Removed $file."
+    fi
+done
 
 echo 'clean.sh complete.'
