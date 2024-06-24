@@ -26,7 +26,7 @@ Run the local development server.
 flask --app cookbook --debug run
 ```
 
-Navigate to `localhost:5000`.
+Use `localhost:5000`.
 
 ## Tests
 
@@ -37,14 +37,10 @@ coverage report
 
 ## Docker
 
-Build the image.
+With compose:
 
 ```bash
-docker build -t cookbook:local .
+docker compose up --build
 ```
 
-Run the container on port 5000.
-
-```bash
-docker run --rm -it -p 5000:80 cookbook:local
-```
+Use `localhost:5000`.
