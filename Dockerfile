@@ -4,6 +4,7 @@
 
 FROM tiangolo/uwsgi-nginx-flask:python3.11
 
+ENV FLASK_APP=cookbook/application
 ENV UWSGI_INI=/app/uwsgi.ini
 ENV STATIC_URL=/app/app/static
 

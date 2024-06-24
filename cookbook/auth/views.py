@@ -9,9 +9,9 @@ from cookbook.auth import storage, validation
 # Authentication Blueprint
 #-------------------------------------------------------------------------------
 blueprint = Blueprint(
-    'auth', __name__, 
-    url_prefix='/auth', 
-    static_folder='static', 
+    'auth', __name__,
+    url_prefix='/auth',
+    static_folder='static',
     template_folder='templates',
 )
 
