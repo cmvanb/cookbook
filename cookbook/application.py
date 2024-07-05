@@ -24,7 +24,7 @@ def create_app(config_class=Config):
     except OSError:
         pass
 
-    from . import db
+    from cookbook import db
     db.init_app(app)
 
     from cookbook.main.views import blueprint as main
