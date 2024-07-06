@@ -1,4 +1,9 @@
-[tool.pyright]
-executionEnvironments = [
-    { root = "./" }
+[project]
+name = "Cookbook"
+version = "0.0.1"
+authors = [
+  { name="Casper" },
 ]
+description = "A personal recipe management and meal planner app."
+readme = "README.md"
+requires-python = ">=3.11"

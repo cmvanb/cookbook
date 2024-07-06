@@ -17,13 +17,13 @@ pip install -r cookbook/requirements.txt
 Initialize the database.
 
 ```bash
-flask --app cookbook init-db
+FLASK_APP=cookbook:app flask init-db
 ```
 
 Run the local development server.
 
 ```bash
-flask --app cookbook --debug run
+FLASK_APP=cookbook:app flask --debug run
 ```
 
 Use `localhost:5000`.

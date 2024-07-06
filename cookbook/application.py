@@ -3,21 +3,25 @@
 #-------------------------------------------------------------------------------
 
 import os
-from pathlib import Path
 
 from flask import Flask
 
 from cookbook.config import Config
 
-def create_app(config_class=Config):
+def create_app():
     """Create and configure the flask application.
     """
 
-    app = Flask(__name__, static_url_path=None)
+    config = Config()
 
-    app.config.from_object(config_class)
-    app.static_url_path = app.config['STATIC_FOLDER']
-    app.static_folder = Path(app.root_path) / app.static_url_path
+    app = Flask(
+        __name__,
+        instance_path=config.INSTANCE_PATH,
+        static_folder=config.STATIC_FOLDER,
+        template_folder=config.TEMPLATE_FOLDER,
+        static_url_path=None,
+    )
+    app.config.from_object(config)
 
     try:
         os.makedirs(app.instance_path)
