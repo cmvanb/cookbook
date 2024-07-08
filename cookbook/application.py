@@ -8,11 +8,13 @@ from flask import Flask
 
 from cookbook.config import Config
 
-def create_app():
+def create_app(config=None):
     """Create and configure the flask application.
     """
 
-    config = Config()
+    config = config or Config.from_env_or_default()
+
+    print(config)
 
     app = Flask(
         __name__,

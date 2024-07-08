@@ -3,6 +3,7 @@ import tempfile
 import pytest
 
 from cookbook.application import create_app
+from cookbook.config import Config
 from cookbook.db import get_db, init_db
 
 with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
@@ -13,10 +14,9 @@ with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
 def app():
     db_fd, db_path = tempfile.mkstemp()
 
-    app = create_app({
-        'TESTING': True,
-        'DATABASE_URI': db_path,
-    })
+    app_config = Config(testing=True, database_path=db_path)
+
+    app = create_app(app_config)
 
     with app.app_context():
         init_db()
