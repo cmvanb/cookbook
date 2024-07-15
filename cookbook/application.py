@@ -12,7 +12,7 @@ def create_app(config=None):
     """Create and configure the flask application.
     """
 
-    config = config or Config.from_env_or_default()
+    config = config or Config.from_env()
 
     print(config)
 

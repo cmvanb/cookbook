@@ -4,6 +4,9 @@ from textwrap import dedent
 
 
 class Config:
+    """ Configuration object for the Flask application.
+    """
+
     TESTING: bool
     INSTANCE_PATH: str
     STATIC_FOLDER: str
@@ -24,6 +27,9 @@ class Config:
         upload_folder = None,
         max_content_length = None,
         ):
+        """ Where no value is passed, the constructor will use a default value.
+        """
+
         basedir = os.path.abspath(os.path.dirname(__file__))
         parentdir = Path(basedir).parent
 
@@ -64,7 +70,10 @@ class Config:
             ''')
 
     @staticmethod
-    def from_env_or_default():
+    def from_env():
+        """ Initialize with values from the environment.
+        """
+
         return Config(
             testing            = os.environ.get('TESTING'),
             instance_path      = os.environ.get('INSTANCE_PATH'),
