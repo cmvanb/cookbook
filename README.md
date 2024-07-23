@@ -7,7 +7,7 @@ A personal recipe management and meal planner app.
 ![Build](https://github.com/cmvanb/cookbook/actions/workflows/build.yml/badge.svg)
 ![Test](https://github.com/cmvanb/cookbook/actions/workflows/test.yml/badge.svg)
 
-Install the project.
+1. Install the project.
 
 ```bash
 git clone git@github.com:cmvanb/cookbook.git
@@ -17,33 +17,40 @@ source venv/bin/activate
 pip install -r cookbook/requirements.txt
 ```
 
-Initialize the database.
+2. Initialize the database.
 
 ```bash
 FLASK_APP=cookbook:app flask init-db
 ```
 
-Run the local development server.
+3. Run the local development server.
 
 ```bash
 FLASK_APP=cookbook:app flask --debug run
 ```
 
-Use `localhost:5000`.
+4. Use `localhost:5000`.
 
 ## Tests
 
+1. Run the tests.
+
 ```bash
 coverage run -m pytest
+```
+
+2. Generate a coverage report.
+
+```bash
 coverage report
 ```
 
 ## Docker
 
-With compose:
+1. Build and run the image.
 
 ```bash
 docker compose up --build
 ```
 
-Use `localhost:5000`.
+2. Use `localhost:5000`.
