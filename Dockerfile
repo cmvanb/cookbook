@@ -12,7 +12,7 @@ ENV UWSGI_INI=/app/uwsgi.ini
 ENV STATIC_PATH=/app/cookbook/main/static
 
 WORKDIR /app
-COPY ./uwsgi.ini /app/uwsgi.ini
+COPY ./deployment/uwsgi.ini /app/uwsgi.ini
 COPY ./cookbook /app/cookbook
 
 RUN pip install -r /app/cookbook/requirements.txt
