@@ -4,15 +4,17 @@
 
 import os
 import uuid
+from pathlib import Path
 
 from flask import current_app
 from werkzeug.exceptions import abort
 
 from cookbook.db import get_db
 
-# Retrieve all recipes by user.
-#-------------------------------------------------------------------------------
+
 def get_all_recipes(user_id):
+    """ Retrieve all recipes by user. """
+
     db = get_db()
     cursor = db.cursor()
 
@@ -25,9 +27,10 @@ def get_all_recipes(user_id):
 
     return cursor.execute(sql, args).fetchall()
 
-# Retrieve recipe by ID and user.
-#-------------------------------------------------------------------------------
+
 def get_recipe(recipe_id, user_id):
+    """ Retrieve recipe by ID and user. """
+
     db = get_db()
     cursor = db.cursor()
 
@@ -46,9 +49,10 @@ def get_recipe(recipe_id, user_id):
 
     return recipe
 
-# Retrieve recipe's ingredient maps by ID.
-#-------------------------------------------------------------------------------
+
 def get_recipe_ingredient_maps(recipe_id):
+    """ Retrieve recipe's ingredient maps by ID. """
+
     db = get_db()
     cursor = db.cursor()
 
@@ -62,10 +66,11 @@ def get_recipe_ingredient_maps(recipe_id):
 
     return cursor.execute(sql, args).fetchall()
 
-# Retrieve recipe's ingredients by ID as a flattened list.
+
 # TODO: Remove this hack by implementing proper ingredient parsing at ingest.
-#-------------------------------------------------------------------------------
 def get_recipe_ingredients_text(recipe_id):
+    """ Retrieve recipe's ingredients by ID as a flattened list. """
+
     maps = get_recipe_ingredient_maps(recipe_id)
     recipe_ingredients_text = ''
 
@@ -76,10 +81,11 @@ def get_recipe_ingredients_text(recipe_id):
 
     return recipe_ingredients_text
 
-# Add new recipe.
-#-------------------------------------------------------------------------------
+
 def add_recipe(user_id, title, author, description, source_url, servings,
                prep_time, cook_time, instructions, image, parsed_ingredients):
+    """ Add new recipe. """
+
     image_path = save_user_image(image)
     
     db = get_db()
@@ -117,11 +123,12 @@ def add_recipe(user_id, title, author, description, source_url, servings,
 
     return recipe_id
 
-# Edit existing recipe.
-#-------------------------------------------------------------------------------
+
 def edit_recipe(recipe_id, user_id, title, author, description, source_url,
                 servings, prep_time, cook_time, instructions, image,
                 parsed_ingredients):
+    """ Edit existing recipe. """
+
     recipe = get_recipe(recipe_id, user_id)
 
     delete_user_image(recipe['image_path'])
@@ -168,9 +175,10 @@ def edit_recipe(recipe_id, user_id, title, author, description, source_url,
         cursor.execute(sql, args)
         db.commit()
 
-# Delete existing recipe.
-#-------------------------------------------------------------------------------
+
 def delete_recipe(recipe_id, user_id):
+    """ Delete existing recipe. """
+
     recipe = get_recipe(recipe_id, user_id)
 
     delete_user_image(recipe['image_path'])
@@ -198,23 +206,25 @@ def delete_recipe(recipe_id, user_id):
     cursor.execute(sql, args)
     db.commit()
 
-# Save user uploaded image.
-#-------------------------------------------------------------------------------
+
 def save_user_image(image):
-    directory = os.path.join(current_app.static_folder, 'user_images')
-    if not os.path.exists(directory):
-        os.mkdir(directory)
+    """ Save user uploaded image. """
+
+    path = Path(current_app.config['STATIC_FOLDER']) / 'user_images'
+    if not os.path.exists(path):
+        os.mkdir(path)
 
     file_name = str(uuid.uuid4())
 
-    image.save(os.path.join(directory, file_name))
+    image.save(os.path.join(path, file_name))
 
     return os.path.join('user_images', file_name)
 
-# Delete user uploaded image.
-#-------------------------------------------------------------------------------
-def delete_user_image(image_path):
-    path = os.path.join(current_app.static_folder, image_path)
+
+def delete_user_image(image_path: str):
+    """ Delete user uploaded image. """
+
+    path = Path(current_app.config['STATIC_FOLDER']) / image_path
 
     if os.path.exists(path):
         os.remove(path)
