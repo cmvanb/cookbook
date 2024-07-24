@@ -14,6 +14,7 @@ from cookbook.db import get_db
 #-------------------------------------------------------------------------------
 def get_all_recipes(user_id):
     db = get_db()
+    cursor = db.cursor()
 
     sql = """
         SELECT r.id, user_id, created, title, description, image_path
@@ -22,12 +23,13 @@ def get_all_recipes(user_id):
         """
     args = (user_id, )
 
-    return db.execute(sql, args).fetchall()
+    return cursor.execute(sql, args).fetchall()
 
 # Retrieve recipe by ID and user.
 #-------------------------------------------------------------------------------
 def get_recipe(recipe_id, user_id):
     db = get_db()
+    cursor = db.cursor()
 
     sql = """
         SELECT
@@ -38,7 +40,7 @@ def get_recipe(recipe_id, user_id):
         """
     args = (recipe_id, user_id)
 
-    recipe = db.execute(sql, args).fetchone()
+    recipe = cursor.execute(sql, args).fetchone()
     if recipe is None:
         abort(404, f'Recipe id {recipe_id} not found.')
 
@@ -48,6 +50,7 @@ def get_recipe(recipe_id, user_id):
 #-------------------------------------------------------------------------------
 def get_recipe_ingredient_maps(recipe_id):
     db = get_db()
+    cursor = db.cursor()
 
     sql = """
         SELECT
@@ -57,7 +60,7 @@ def get_recipe_ingredient_maps(recipe_id):
         """
     args = (recipe_id, )
 
-    return db.execute(sql, args).fetchall()
+    return cursor.execute(sql, args).fetchall()
 
 # Retrieve recipe's ingredients by ID as a flattened list.
 # TODO: Remove this hack by implementing proper ingredient parsing at ingest.
@@ -80,6 +83,7 @@ def add_recipe(user_id, title, author, description, source_url, servings,
     image_path = save_user_image(image)
     
     db = get_db()
+    cursor = db.cursor()
 
     # Add recipe.
     sql = """
@@ -88,15 +92,15 @@ def add_recipe(user_id, title, author, description, source_url, servings,
             image_path, servings, prep_time, cook_time, instructions
             )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        RETURNING id
         """
     args = (user_id, title, author, description, source_url, image_path, servings,
         prep_time, cook_time, instructions)
 
-    recipe = db.execute(sql, args).fetchone()
-    db.commit()
+    cursor.execute(sql, args)
 
-    recipe_id = recipe['id']
+    recipe_id = cursor.lastrowid
+
+    db.commit()
 
     # Add ingredient maps.
     for ingredient in parsed_ingredients:
@@ -108,7 +112,7 @@ def add_recipe(user_id, title, author, description, source_url, servings,
             """
         args = (recipe_id, ingredient.name, ingredient.count)
 
-        db.execute(sql, args)
+        cursor.execute(sql, args)
         db.commit()
 
     return recipe_id
@@ -124,6 +128,7 @@ def edit_recipe(recipe_id, user_id, title, author, description, source_url,
     image_path = save_user_image(image)
 
     db = get_db()
+    cursor = db.cursor()
 
     # Update recipe.
     sql = """
@@ -137,7 +142,7 @@ def edit_recipe(recipe_id, user_id, title, author, description, source_url,
     args = (title, author, description, source_url, image_path, servings,
         prep_time, cook_time, instructions, recipe_id, user_id)
 
-    db.execute(sql, args)
+    cursor.execute(sql, args)
     db.commit()
 
     # Delete pre-existing ingredient maps.
@@ -147,7 +152,7 @@ def edit_recipe(recipe_id, user_id, title, author, description, source_url,
         """
     args = (recipe_id, )
 
-    db.execute(sql, args)
+    cursor.execute(sql, args)
     db.commit()
 
     # Add updated ingredient maps.
@@ -160,7 +165,7 @@ def edit_recipe(recipe_id, user_id, title, author, description, source_url,
             """
         args = (recipe_id, ingredient.name, ingredient.count)
 
-        db.execute(sql, args)
+        cursor.execute(sql, args)
         db.commit()
 
 # Delete existing recipe.
@@ -171,6 +176,7 @@ def delete_recipe(recipe_id, user_id):
     delete_user_image(recipe['image_path'])
 
     db = get_db()
+    cursor = db.cursor()
 
     # Delete recipe.
     sql = """
@@ -179,7 +185,7 @@ def delete_recipe(recipe_id, user_id):
         """
     args = (recipe_id, user_id)
 
-    db.execute(sql, args)
+    cursor.execute(sql, args)
     db.commit()
 
     # Delete ingredient maps.
@@ -189,7 +195,7 @@ def delete_recipe(recipe_id, user_id):
         """
     args = (recipe_id, )
 
-    db.execute(sql, args)
+    cursor.execute(sql, args)
     db.commit()
 
 # Save user uploaded image.

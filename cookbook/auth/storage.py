@@ -10,6 +10,7 @@ from cookbook.db import get_db
 #-------------------------------------------------------------------------------
 def add_user(email, display_name, password):
     db = get_db()
+    cursor = db.cursor()
 
     hashed_password = generate_password_hash(password)
 
@@ -20,7 +21,7 @@ def add_user(email, display_name, password):
     args = (email, display_name, hashed_password)
 
     try:
-        db.execute(sql, args)
+        cursor.execute(sql, args)
         db.commit()
     except db.IntegrityError:
         return f'Email address `{email}` is already registered to an account.'
@@ -31,22 +32,24 @@ def add_user(email, display_name, password):
 #-------------------------------------------------------------------------------
 def get_user_by_id(id):
     db = get_db()
+    cursor = db.cursor()
 
     sql = """
         SELECT * FROM user WHERE id = ?
     """
     args = (id, )
 
-    return db.execute(sql, args).fetchone()
+    return cursor.execute(sql, args).fetchone()
 
 # Get user by email
 #-------------------------------------------------------------------------------
 def get_user_by_email(email):
     db = get_db()
+    cursor = db.cursor()
 
     sql = """
         SELECT * FROM user WHERE email = ?
     """
     args = (email, )
 
-    return db.execute(sql, args).fetchone()
+    return cursor.execute(sql, args).fetchone()
