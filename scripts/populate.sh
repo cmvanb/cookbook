@@ -10,9 +10,6 @@ set -euo pipefail
 # TODO: Add usage helper.
 # TODO: Parse command line arguments.
 
-# Detect script directory.
-SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
-
 # Server configuration.
 ADDRESS=localhost:5000
 
@@ -23,6 +20,9 @@ DISPLAY_NAME=Demo
 
 # Recipes configuration.
 RECIPE_DIR=$HOME/Projects/cookbook/demo-data
+
+# Use existing session file.
+SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 SESSION_FILE=$SCRIPT_DIR/session.json
 
 # Register and login.
