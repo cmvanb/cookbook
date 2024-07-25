@@ -4,8 +4,7 @@
 
 from flask import Blueprint, redirect, url_for
 
-# Main Blueprint
-#-------------------------------------------------------------------------------
+
 blueprint = Blueprint(
     'main', __name__,
     url_prefix='/',
@@ -13,9 +12,10 @@ blueprint = Blueprint(
     template_folder='templates',
 )
 
-# Index view.
-#-------------------------------------------------------------------------------
+
 @blueprint.route('/')
 def index():
+    """ Index view. Redirects to the login page. """
+
     # TODO: Render a nice splash page instead of redirecting.
     return redirect(url_for('auth.login'))

@@ -2,17 +2,12 @@
 # Recipes views
 #-------------------------------------------------------------------------------
 
-import os
-import uuid
-
-from flask import Blueprint, current_app, flash, g, redirect, render_template, request, url_for, session, send_file
+from flask import Blueprint, flash, g, redirect, render_template, request, url_for, session, send_file
 
 from cookbook.auth.utils import login_required
-from cookbook.db import get_db
 from cookbook.recipes import parsing, storage, validation, exporter
 
-# Recipes blueprint
-#-------------------------------------------------------------------------------
+
 blueprint = Blueprint(
     'recipes', __name__, 
     url_prefix='/recipes', 
@@ -20,23 +15,28 @@ blueprint = Blueprint(
     template_folder='templates',
 )
 
-# Index view.
-#-------------------------------------------------------------------------------
+
 @blueprint.route('')
 @login_required
 def index():
+    """ Index view. Shows all recipes for the current user. """
+
     user_id = session['user_id']
 
     recipes = storage.get_all_recipes(user_id)
 
     return render_template('index.html', recipes=recipes)
 
-# Add recipe view.
-#-------------------------------------------------------------------------------
+
 @blueprint.route('/add', methods=('GET', 'POST'))
 @login_required
 def add():
+    """ Add recipe view. """
+
     def post():
+        """ POST validates recipe form data, parses ingredients and adds the
+        recipe to the database. """
+
         user_id      = g.user['id']
         title        = request.form['title']
         author       = request.form['author']
@@ -75,16 +75,20 @@ def add():
             flash(error)
             status = 400
 
-    return render_template('add.html')
+    return render_template('add.html'), status
 
-# Edit recipe view.
-#-------------------------------------------------------------------------------
+
 @blueprint.route('/edit/<int:id>', methods=('GET', 'POST'))
 @login_required
 def edit(id):
+    """ Edit recipe view. """
+
     user_id = session['user_id']
 
     def post():
+        """ POST validates recipe form data, parses ingredients and edits the
+        recipe in the database. """
+
         title        = request.form['title']
         author       = request.form['author']
         description  = request.form['description']
@@ -130,11 +134,12 @@ def edit(id):
         recipe=recipe,
         recipe_ingredients_text=recipe_ingredients_text), status
 
-# View recipe view.
-#-------------------------------------------------------------------------------
+
 @blueprint.route('/view/<int:id>')
 @login_required
 def view(id):
+    """ View recipe view. Simply renders a recipe. """
+
     user_id = session['user_id']
 
     recipe = storage.get_recipe(id, user_id)
@@ -145,22 +150,24 @@ def view(id):
         recipe=recipe,
         recipe_ingredient_maps=recipe_ingredient_maps)
 
-# Delete recipe view.
-#-------------------------------------------------------------------------------
+
 @blueprint.route('/delete/<int:id>', methods=('POST',))
 @login_required
 def delete(id):
+    """ Delete recipe view. Deletes a recipe from the database. """
+
     user_id = session['user_id']
 
     storage.delete_recipe(id, user_id)
 
     return redirect(url_for('.index'))
 
-# Export reciew view.
-#-------------------------------------------------------------------------------
+
 @blueprint.route('/export/<int:id>')
 @login_required
 def export(id):
+    """ Export recipe view. Exports a recipe as a YAML file. """
+
     user_id = session['user_id']
 
     recipe = storage.get_recipe(id, user_id)

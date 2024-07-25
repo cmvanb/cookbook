@@ -8,9 +8,10 @@ import math
 
 from cookbook.recipes import utils
 
-# Convert recipe model to YAML format.
-#-------------------------------------------------------------------------------
+
 def recipe_to_yaml(recipe, ingredients_list, instructions_list):
+    """ Convert recipe model to YAML format. """
+
     output = {}
     output['title'] = recipe['title']
     output['author'] = recipe['author']
@@ -30,8 +31,9 @@ def recipe_to_yaml(recipe, ingredients_list, instructions_list):
 
     return file
 
-# Format recipe file name.
-#-------------------------------------------------------------------------------
+
 def recipe_file_name(title):
+    """ Format recipe file name. """
+
     title = utils.kebabcase(title)
     return f'{title}.yaml'

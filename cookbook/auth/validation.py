@@ -5,9 +5,10 @@
 from email_validator import validate_email, EmailNotValidError
 from werkzeug.security import check_password_hash
 
-# Validate user registration.
-#-------------------------------------------------------------------------------
+
 def validate_registration(email, display_name, password):
+    """ Validate user registration. """
+
     if not email:
         return 'Email is required.'
     if not display_name:
@@ -24,9 +25,10 @@ def validate_registration(email, display_name, password):
 
     return None
 
-# Validate user login.
-#-------------------------------------------------------------------------------
+
 def validate_login(user, password):
+    """ Validate user login. """
+
     if user is None:
         return 'Invalid email.'
     if not check_password_hash(user['password'], password):

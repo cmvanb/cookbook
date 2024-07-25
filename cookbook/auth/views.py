@@ -6,8 +6,7 @@ from flask import Blueprint, flash, g, redirect, render_template, request, sessi
 
 from cookbook.auth import storage, validation
 
-# Authentication Blueprint
-#-------------------------------------------------------------------------------
+
 blueprint = Blueprint(
     'auth', __name__,
     url_prefix='/auth',
@@ -15,11 +14,14 @@ blueprint = Blueprint(
     template_folder='templates',
 )
 
-# Registration view.
-#-------------------------------------------------------------------------------
+
 @blueprint.route('/register', methods=('GET', 'POST'))
 def register():
+    """ Registration view. """
+
     def post():
+        """ POST validates user form data and adds the user to the database. """
+
         email        = request.form['email']
         display_name = request.form['display_name']
         password     = request.form['password']
@@ -49,11 +51,14 @@ def register():
 
     return render_template('register.html'), status
 
-# Login view.
-#-------------------------------------------------------------------------------
+
 @blueprint.route('/login', methods=('GET', 'POST'))
 def login():
+    """ Login view. """
+
     def post():
+        """ POST validates the user login details and returns the user object. """
+
         email    = request.form['email']
         password = request.form['password']
 
@@ -81,18 +86,20 @@ def login():
 
     return render_template('login.html'), status
 
-# Logout view.
-#-------------------------------------------------------------------------------
+
 @blueprint.route('/logout')
 def logout():
+    """ Logout view. """
+
     session.clear()
 
     return redirect(url_for('.login'))
 
-# Runs before each view request, to retrieve logged in user.
-#-------------------------------------------------------------------------------
+
 @blueprint.before_app_request
 def load_logged_in_user():
+    """ Run this decorator before each view request, to retrieve logged in user. """
+
     user_id = session.get('user_id')
 
     if user_id is None:

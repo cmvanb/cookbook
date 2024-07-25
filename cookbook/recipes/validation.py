@@ -2,21 +2,23 @@
 # Recipes validation layer
 #-------------------------------------------------------------------------------
 
-# Determine whether an image is acceptable to the server.
-# NOTE: Perhaps worthwhile to check some more substantial image attiributes than
-#   the user-provided file extension.
-#-------------------------------------------------------------------------------
 ALLOWED_EXTENSIONS = { 'png', 'jpg', 'jpeg' }
 
 def image_allowed(file):
+    """ Determine whether an image is acceptable to the server. """
+
+    # NOTE: Perhaps it's worthwhile to check some more substantial image
+    #   attiributes than the user-provided file extension.
+
     return file.mimetype[0:5] == 'image' \
         and '.' in file.filename \
         and file.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Validate user input recipe data.
-#-------------------------------------------------------------------------------
+
 def validate_recipe(title, author, description, source_url, servings, prep_time,
                     cook_time, ingredients, instructions, image):
+    """ Validate user input recipe data. """
+
     # TODO: Make some of these optional.
     if not title:
         return 'Title is required.'

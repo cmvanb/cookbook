@@ -6,9 +6,10 @@ from werkzeug.security import generate_password_hash
 
 from cookbook.db import get_db
 
-# Add new user
-#-------------------------------------------------------------------------------
+
 def add_user(email, display_name, password):
+    """ Add new user to the database; store a hashed password. """
+
     db = get_db()
     cursor = db.cursor()
 
@@ -28,9 +29,10 @@ def add_user(email, display_name, password):
 
     return None
 
-# Get user by id
-#-------------------------------------------------------------------------------
+
 def get_user_by_id(id):
+    """ Get user by ID. """
+
     db = get_db()
     cursor = db.cursor()
 
@@ -41,9 +43,10 @@ def get_user_by_id(id):
 
     return cursor.execute(sql, args).fetchone()
 
-# Get user by email
-#-------------------------------------------------------------------------------
+
 def get_user_by_email(email):
+    """ Get user by email. """
+
     db = get_db()
     cursor = db.cursor()
 
