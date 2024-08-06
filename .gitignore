@@ -10,6 +10,9 @@ instance/
 # Virtual environment.
 venv/
 
+# Environment variables.
+.env
+
 # Direnv.
 .envrc
 

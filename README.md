@@ -47,10 +47,18 @@ coverage report
 
 ## Docker
 
-1. Build and run the image.
+1. Copy `example.env` and rename it to `.env`.
+
+```bash
+cp example.env .env
+```
+
+2. Edit the `.env` file to set the Flask secret key.
+
+3. Build and run the image.
 
 ```bash
 docker compose up --build
 ```
 
-2. Use `localhost:5000`.
+4. Use `localhost:5000`.
