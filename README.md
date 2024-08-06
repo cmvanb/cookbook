@@ -4,7 +4,7 @@ A personal recipe management and meal planner app.
 
 ## Development
 
-![Build](https://github.com/cmvanb/cookbook/actions/workflows/build.yml/badge.svg)
+![Build](https://github.com/cmvanb/cookbook/actions/workflows/docker.yml/badge.svg)
 ![Test](https://github.com/cmvanb/cookbook/actions/workflows/test.yml/badge.svg)
 
 1. Install the project.
