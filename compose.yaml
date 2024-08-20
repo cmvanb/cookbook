@@ -5,14 +5,23 @@ services:
     tty: true
     volumes:
       - ./instance/:/root/db/
+    networks:
+      - net
 
   app:
     build: .
     environment:
       - SECRET_KEY=${SECRET_KEY}
-    ports:
-      - 5000:80
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      - VIRTUAL_PORT=${VIRTUAL_PORT}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST}
     volumes:
       - ./instance/:/app/instance/
     depends_on:
       - sqlite3
+    networks:
+      - net
+
+networks:
+  net:
+    external: true
