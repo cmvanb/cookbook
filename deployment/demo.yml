@@ -4,19 +4,19 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - ./instance/:/root/db/
+      - ../instance/:/root/db/
     networks:
       - net
 
   app:
-    build: .
+    build: ..
     environment:
       - SECRET_KEY=${SECRET_KEY}
       - VIRTUAL_HOST=${VIRTUAL_HOST}
       - VIRTUAL_PORT=${VIRTUAL_PORT}
       - LETSENCRYPT_HOST=${LETSENCRYPT_HOST}
     volumes:
-      - ./instance/:/app/instance/
+      - ../instance/:/app/instance/
     depends_on:
       - sqlite3
     networks:

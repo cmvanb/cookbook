@@ -29,7 +29,13 @@ FLASK_APP=cookbook:app flask init-db
 FLASK_APP=cookbook:app flask --debug run
 ```
 
-4. Use `localhost:5000`.
+4. Alternatively, use the docker dev deployment.
+
+```bash
+docker compose -f deployment/dev.yml up --build
+```
+
+5. Navigate to `localhost:5000`.
 
 ## Tests
 
@@ -45,12 +51,12 @@ coverage run -m pytest
 coverage report
 ```
 
-## Docker
+## Deployment with Docker
 
 1. Copy `example.env` and rename it to `.env`.
 
 ```bash
-cp example.env .env
+cp deployment/example.env deployment/.env
 ```
 
 2. Edit the `.env` file to set the Flask secret key.
@@ -58,7 +64,5 @@ cp example.env .env
 3. Build and run the image.
 
 ```bash
-docker compose up --build
+docker compose -f deployment/demo.yml up --build
 ```
-
-4. Use `localhost:5000`.
