@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker Image CI/CD
 
 on:
   push:
@@ -9,6 +9,15 @@ on:
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_ACCESS_TOKEN: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+  HOST: ${{ secrets.DEMO_HOST }}
+  USER: ${{ secrets.DEMO_USER }}
+  PASSWORD: ${{ secrets.DEMO_PASSWORD }}
+  SSH_PORT: ${{ secrets.DEMO_SSH_PORT }}
+  SSH_PRIVATE_KEY: ${{ secrets.DEMO_SSH_PRIVATE_KEY }}
+  ENV_SECRET_KEY: ${{ secrets.DEMO_ENV_SECRET_KEY }}
+  ENV_VIRTUAL_HOST: ${{ secrets.DEMO_ENV_VIRTUAL_HOST }}
+  ENV_VIRTUAL_PORT: ${{ secrets.DEMO_ENV_VIRTUAL_PORT }}
+  ENV_LETSENCRYPT_HOST: ${{ secrets.DEMO_ENV_LETSENCRYPT_HOST }}
 
 jobs:
   build:
@@ -41,3 +50,35 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup SSH
+      run: sudo apt-get install -y openssh-client
+
+    - name: Deploy to demo server
+      run: |
+        cd ..
+        echo "$SSH_PRIVATE_KEY" > private_key.pem
+        chmod 600 private_key.pem
+        echo "SECRET_KEY=$ENV_SECRET_KEY" > ./cookbook/deployment/.env
+        echo "VIRTUAL_HOST=$ENV_VIRTUAL_HOST" >> ./cookbook/deployment/.env
+        echo "VIRTUAL_PORT=$ENV_VIRTUAL_PORT" >> ./cookbook/deployment/.env
+        echo "LETSENCRYPT_HOST=$ENV_LETSENCRYPT_HOST" >> ./cookbook/deployment/.env
+        rsync \
+          --human-readable \
+          --verbose \
+          --recursive \
+          --archive \
+          --delete-after \
+          --exclude='.git' \
+          --rsh="ssh -o StrictHostKeyChecking=no -i private_key.pem -p $SSH_PORT" \
+          ./cookbook $USER@$HOST:"/home/$USER"
+        ssh -i private_key.pem -p $SSH_PORT -t $USER@$HOST \
+          "cd cookbook && echo '$PASSWORD' | sudo -S ./deployment/deploy-demo.sh"
+        rm -f private_key.pem
