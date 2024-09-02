@@ -24,3 +24,6 @@ venv/
 
 # HTTPie artifacts.
 session.json
+
+# Pytest artifacts.
+.pytest_cache/
