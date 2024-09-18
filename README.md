@@ -2,6 +2,10 @@
 
 A personal recipe management and meal planner app.
 
+## Demo
+
+A demo of the app is available at [cookbook.codemu.ch](https://cookbook.codemu.ch). You will need to register a user account to access it.
+
 ## Development
 
 ![Build](https://github.com/cmvanb/cookbook/actions/workflows/docker.yml/badge.svg)
