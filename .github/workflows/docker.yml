@@ -66,10 +66,10 @@ jobs:
         cd ..
         echo "$SSH_PRIVATE_KEY" > private_key.pem
         chmod 600 private_key.pem
-        echo "SECRET_KEY=$ENV_SECRET_KEY" > ./cookbook/deployment/.env
-        echo "VIRTUAL_HOST=$ENV_VIRTUAL_HOST" >> ./cookbook/deployment/.env
-        echo "VIRTUAL_PORT=$ENV_VIRTUAL_PORT" >> ./cookbook/deployment/.env
-        echo "LETSENCRYPT_HOST=$ENV_LETSENCRYPT_HOST" >> ./cookbook/deployment/.env
+        echo "SECRET_KEY=$ENV_SECRET_KEY" > cookbook/deployment/.env
+        echo "VIRTUAL_HOST=$ENV_VIRTUAL_HOST" >> cookbook/deployment/.env
+        echo "VIRTUAL_PORT=$ENV_VIRTUAL_PORT" >> cookbook/deployment/.env
+        echo "LETSENCRYPT_HOST=$ENV_LETSENCRYPT_HOST" >> cookbook/deployment/.env
         rsync \
           --human-readable \
           --verbose \
@@ -78,7 +78,8 @@ jobs:
           --delete-after \
           --exclude='.git' \
           --rsh="ssh -o StrictHostKeyChecking=no -i private_key.pem -p $SSH_PORT" \
-          ./cookbook $USER@$HOST:"/home/$USER"
+          cookbook $USER@$HOST:"/home/$USER"
         ssh -i private_key.pem -p $SSH_PORT -t $USER@$HOST \
           "cd cookbook && echo '$PASSWORD' | sudo -S ./deployment/deploy-demo.sh"
         rm -f private_key.pem
+        rm -f cookbook/deployment/.env
