@@ -4,7 +4,7 @@ import { createSignal } from 'solid-js';
 import TopBar from './components/TopBar';
 import DrawerMenu from './components/DrawerMenu';
 
-function App() {
+function App(props) {
     const [menuOpen, setMenuOpen] = createSignal(false);
 
     return (
@@ -14,14 +14,7 @@ function App() {
                 <DrawerMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
             </header>
             <main class="responsive">
-                <div class="grid">
-                    <div class="s6">
-                        <h3>Hello world!</h3>
-                    </div>
-                    <div class="s6">
-                        <h3>Content goes here.</h3>
-                    </div>
-                </div>
+                {props.children}
             </main>
             <footer>
             </footer>
