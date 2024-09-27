@@ -1,4 +1,3 @@
-import 'beercss';
 import { createSignal } from 'solid-js';
 
 import TopBar from './components/TopBar';

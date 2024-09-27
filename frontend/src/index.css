@@ -5,12 +5,31 @@ body {
         sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-
-    /* NOTE: Necessary. */
-    text-align: center;
 }
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
         monospace;
+}
+
+:is(main,header,footer,section).responsive {
+    max-inline-size: 60rem;
+    margin: 0 auto;
+}
+
+article {
+    margin: 2rem;
+}
+
+article .header {
+    width: fit-content;
+    margin: auto;
+    text-align: center;
+}
+
+article .content {
+    display: flex;
+    width: fit-content;
+    max-width: 41rem;
+    margin: 1rem auto;
 }

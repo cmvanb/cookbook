@@ -1,8 +1,15 @@
-/* @refresh reload */
+/*------------------------------------------------------------------------------
+    Entry point for the frontend application.
+------------------------------------------------------------------------------*/
+// @refresh reload
+
 import { render } from 'solid-js/web';
 import { Router, Route } from '@solidjs/router';
 
+// NOTE: Ordered so local styles will override global styles.
+import 'beercss';
 import './index.css';
+
 import App from './App';
 import Splash from './pages/Splash';
 import NotFound from './pages/NotFound';
