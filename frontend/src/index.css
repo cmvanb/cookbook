@@ -22,14 +22,14 @@ article {
 }
 
 article .header {
-    width: fit-content;
-    margin: auto;
     text-align: center;
 }
 
 article .content {
     display: flex;
-    width: fit-content;
-    max-width: 41rem;
+}
+
+section {
     margin: 1rem auto;
+    max-width: 42rem;
 }

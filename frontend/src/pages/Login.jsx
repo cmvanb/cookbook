@@ -1,10 +1,10 @@
 function Login() {
     return (
-        <div>
-            <article class="round">
-                <div class="header center-align">
-                    <h4>Log In</h4>
-                </div>
+        <article>
+            <section class="header center-align">
+                <h4>Log In</h4>
+            </section>
+            <section>
                 <form method="post">
                     <div class="field label border">
                         <input type="email" id="email" name="email" required />
@@ -18,8 +18,8 @@ function Login() {
 
                     <button type="submit" value="Log In">Log In</button>
                 </form>
-            </article>
-        </div>
+            </section>
+        </article>
     );
 }
 

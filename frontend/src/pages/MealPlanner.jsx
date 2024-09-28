@@ -1,8 +1,8 @@
 function MealPlanner() {
     return (
-        <div>
-            <h3>MEAL PLANNER</h3>
-        </div>
+        <article>
+            <h4>MEAL PLANNER</h4>
+        </article>
     );
 }
 

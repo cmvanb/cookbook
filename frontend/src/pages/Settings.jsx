@@ -1,8 +1,10 @@
 function Settings() {
     return (
-        <div>
-            <h3>SETTINGS</h3>
-        </div>
+        <article>
+            <section class="header center-align">
+                <h4>Settings</h4>
+            </section>
+        </article>
     );
 }
 

@@ -14,22 +14,18 @@ function DrawerMenu(props) {
                         </button>
                     </nav>
                 </header>
-                <a>
+                <a href="/mealplanner">
                     <i>calendar_month</i>
                     <span>Meal Planner</span>
                 </a>
-                <a>
+                <a href="/recipes">
                     <i>menu_book</i>
                     <span>Recipes</span>
                 </a>
-                <hr />
-                <a>
+                <hr class="medium" />
+                <a href="/settings">
                     <i>settings</i>
                     <span>Settings</span>
-                </a>
-                <a>
-                    <i>account_circle</i>
-                    <span>Account</span>
                 </a>
                 <a>
                     <i>logout</i>
