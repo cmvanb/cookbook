@@ -2,12 +2,13 @@ import { createSignal } from 'solid-js';
 
 import TopBar from './components/TopBar';
 import DrawerMenu from './components/DrawerMenu';
+import { RecipeProvider } from './contexts/RecipeContext';
 
 function App(props) {
     const [menuOpen, setMenuOpen] = createSignal(false);
 
     return (
-        <div>
+        <RecipeProvider>
             <header>
                 <TopBar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
                 <DrawerMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
@@ -17,7 +18,7 @@ function App(props) {
             </main>
             <footer>
             </footer>
-        </div>
+        </RecipeProvider>
     );
 }
 

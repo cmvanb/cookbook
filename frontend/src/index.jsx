@@ -6,7 +6,7 @@
 import { render } from 'solid-js/web';
 import { Router, Route } from '@solidjs/router';
 
-// NOTE: Ordered so local styles will override global styles.
+// Local styles will override global styles.
 import 'beercss';
 import './index.css';
 

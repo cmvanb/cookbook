@@ -17,12 +17,8 @@ code {
     margin: 0 auto;
 }
 
-article {
-    margin: 2rem;
-}
-
-article .header {
-    text-align: center;
+main.responsive {
+    padding: 2rem;
 }
 
 article .content {
