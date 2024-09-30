@@ -1,7 +1,9 @@
 function MealPlanner() {
     return (
         <article>
-            <h4>MEAL PLANNER</h4>
+            <section class="header center-align">
+                <h4>Meal Planner</h4>
+            </section>
         </article>
     );
 }

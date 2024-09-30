@@ -19,14 +19,14 @@ function Recipes() {
                 </menu>
             </div>
             <div class="grid">
-                <For each={recipes}>
-                    {(recipe) => (
+                <For each={Object.keys(recipes)}>
+                    {(recipeId) => (
                         <article class="recipe-card medium-elevate no-padding s12 m6 l4">
-                            <a href={`/recipes/${recipe.id}`}>
+                            <a href={`/recipes/${recipeId}`}>
                                 <img class="responsive small" src="https://www.teaforturmeric.com/wp-content/uploads/2018/06/Chicken-Korma-in-pan.jpg" />
                                 <div class="padding">
-                                    <h6>{recipe.title}</h6>
-                                    <p>{recipe.description}</p>
+                                    <h6>{recipes[recipeId].title}</h6>
+                                    <p>{recipes[recipeId].description}</p>
                                 </div>
                             </a>
                         </article>

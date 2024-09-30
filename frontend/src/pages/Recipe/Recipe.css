@@ -1,8 +1,16 @@
-#recipe-controls {
+#recipe-close-button {
     position: absolute;
     top: 0;
     right: 0;
     z-index: 10;
+    margin: 0;
+}
+
+#recipe-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
 }
 
 #recipe-image {
