@@ -1,0 +1,10 @@
+[project]
+name = "cookbook"
+version = "0.1.0"
+description = "A personal recipe management and meal planner app."
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[standard]",
+    "pydantic",
+    "pydantic-settings",
+]
