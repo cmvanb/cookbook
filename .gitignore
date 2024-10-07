@@ -15,3 +15,6 @@ __pycache__/
 
 # HTTPie artifacts.
 session.json
+
+# SQLite database.
+backend/cookbook.db
