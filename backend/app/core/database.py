@@ -7,8 +7,8 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.models import Base
-from app.users.actions import create_user, CreateUserParams
-from app.users.models import DbUser
+from app.users.actions import create_user
+from app.users.models import DbUser, UserCreate
 
 engine = create_engine(str(settings.DATABASE_PATH), echo=True)
 
@@ -29,7 +29,7 @@ def init_db() -> None:
         if not user:
             user = create_user(
                 session=session,
-                params=CreateUserParams(
+                params=UserCreate(
                     email=settings.FIRST_SUPERUSER_EMAIL,
                     password=settings.FIRST_SUPERUSER_PASSWORD,
                     is_superuser=True,

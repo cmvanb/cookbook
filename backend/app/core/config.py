@@ -1,7 +1,7 @@
 import secrets
 from typing import Annotated, Any
 
-from pydantic import AnyUrl, BeforeValidator
+from pydantic import AnyUrl, BeforeValidator, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 def parse_cors(v: Any) -> list[str] | str:
@@ -26,9 +26,18 @@ class Settings(BaseSettings):
     # NOTE: 7 days in minutes
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
+    FRONTEND_HOST: str = 'http://localhost:3000'
+
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors)
     ] = []
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def all_cors_origins(self) -> list[str]:
+        return [str(origin).rstrip("/") for origin in self.BACKEND_CORS_ORIGINS] + [
+            self.FRONTEND_HOST
+        ]
 
     PROJECT_NAME: str = 'cookbook'
 

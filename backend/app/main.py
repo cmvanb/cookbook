@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.core.database import get_db, init_db
+from app.core.database import init_db
 from app.core.router import api_router
 
 init_db()
@@ -14,7 +14,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.BACKEND_CORS_ORIGINS],
+    allow_origins=settings.all_cors_origins,
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*'],
@@ -23,5 +23,7 @@ app.add_middleware(
 app.include_router(api_router, prefix=settings.API_PREFIX)
 
 @app.get('/')
-async def root():
+def root():
     return {'message': 'Welcome to FastAPI!'}
+
+# TODO: Serve frontend application

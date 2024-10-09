@@ -3,15 +3,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.security import get_password_hash
-from app.users.models import DbUser
+from app.users.models import DbUser, UserCreate
 
-class CreateUserParams(BaseModel):
-    email: str
-    password: str
-    is_active: bool = True
-    is_superuser: bool = False
 
-def create_user(*, session: Session, params: CreateUserParams) -> DbUser:
+def create_user(*, session: Session, params: UserCreate) -> DbUser:
     user = DbUser(
         email=params.email,
         hashed_password=get_password_hash(params.password),
