@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'solid-js';
 
-import { recipeStore } from '../stores/recipeStore';
+import { recipeStore } from './store';
 
 const RecipeContext = createContext();
 
