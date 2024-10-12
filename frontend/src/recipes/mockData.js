@@ -43,6 +43,6 @@ const chicken_korma = {
         'Lower the heat to medium-low, cover, and allow it to cook for 15 minutes. Uncover and stir in the black cardamom (if using), mace, garam masala, and nutmeg powder. Cover and cook again for 10 minutes.',
         'Raise the heat to high. Add 1/2 to 3/4 cup of water (depending on how thin you\'d like the curry) and bring to a boil. Lower the heat and allow chicken to simmer for another 2-3 minutes. The oil will have risen to the top. Sprinkle the kewra essence and stir. Turn off the heat and garnish with cilantro and blanched almonds.',
     ],
-};
+}
 
-export { chicken_korma };
+export { chicken_korma }

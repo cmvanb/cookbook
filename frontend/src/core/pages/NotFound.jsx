@@ -6,7 +6,7 @@ function NotFound() {
                 <p>This isn't the page you're looking for.</p>
             </section>
         </article>
-    );
+    )
 }
 
-export default NotFound;
+export default NotFound

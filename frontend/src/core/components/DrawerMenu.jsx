@@ -1,7 +1,7 @@
 function DrawerMenu(props) {
     const closeMenu = () => {
-        props.setMenuOpen(false);
-    };
+        props.setMenuOpen(false)
+    }
 
     return (
         <dialog class="left no-padding" classList={{ active: props.menuOpen() }}>
@@ -33,7 +33,7 @@ function DrawerMenu(props) {
                 </a>
             </nav>
         </dialog>
-    );
+    )
 }
 
-export default DrawerMenu;
+export default DrawerMenu

@@ -15,6 +15,7 @@ from app.users.models import UserPublic
 
 router = APIRouter()
 
+
 @router.post('/login/access-token')
 def login_access_token(
     session: SessionDependency,
@@ -36,8 +37,7 @@ def login_access_token(
 
     return Token(access_token=access_token)
 
+
 @router.post('/login/test-token', response_model=UserPublic)
 def test_token(current_user: CurrentUser) -> Any:
     return current_user
-
-# TODO: Password recovery.

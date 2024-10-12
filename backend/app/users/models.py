@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, EmailStr
 from sqlalchemy import String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -29,6 +29,10 @@ class UserBase(BaseModel):
 
 # API requests
 class UserCreate(UserBase):
+    password: str
+
+class UserRegister(BaseModel):
+    email: EmailStr
     password: str
 
 class UserUpdateMe(BaseModel):

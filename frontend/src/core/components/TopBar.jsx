@@ -1,7 +1,7 @@
 function TopBar(props) {
     const toggleMenu = () => {
-        props.setMenuOpen(!props.menuOpen());
-    };
+        props.setMenuOpen(!props.menuOpen())
+    }
 
     return (
         <nav>
@@ -10,7 +10,7 @@ function TopBar(props) {
             </button>
             <h5 class="max center-align">Cookbook</h5>
         </nav>
-    );
+    )
 }
 
-export default TopBar;
+export default TopBar

@@ -1,6 +1,6 @@
-import { createStore } from 'solid-js/store';
+import { createStore } from 'solid-js/store'
 
-import { chicken_korma } from './mockData';
+import { chicken_korma } from './mockData'
 
 const initialState = {
     // That's a lot of korma!
@@ -10,8 +10,8 @@ const initialState = {
             ...acc,
             [e['id']]: e,
         }), {}),
-};
+}
 
-const [ recipeStore, setRecipeStore ] = createStore(initialState);
+const [ recipeStore, setRecipeStore ] = createStore(initialState)
 
-export { recipeStore, setRecipeStore };
+export { recipeStore, setRecipeStore }

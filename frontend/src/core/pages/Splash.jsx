@@ -6,7 +6,7 @@ function Splash() {
                 <p>This splash page is a work in progress. Here we will display user's publicly shared recipes.</p>
             </section>
         </article>
-    );
+    )
 }
 
-export default Splash;
+export default Splash

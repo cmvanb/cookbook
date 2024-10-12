@@ -5,7 +5,7 @@ function Settings() {
                 <h4>Settings</h4>
             </section>
         </article>
-    );
+    )
 }
 
-export default Settings;
+export default Settings

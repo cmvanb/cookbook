@@ -7,13 +7,36 @@ from app.auth.utils import CurrentUser, get_current_active_superuser
 from app.core.database import SessionDependency
 from app.core.models import Message
 from app.core.security import get_password_hash, verify_password
-from app.users.actions import get_user_by_email
 from app.users.models import (
-    DbUser, UserPublic, UsersPublic, UserUpdateMe, UserUpdatePassword
+    DbUser, UserPublic, UsersPublic, UserCreate, UserRegister,
+    UserUpdateMe, UserUpdatePassword
 )
+from app.users.actions import create_user, get_user_by_email
+from app.users.models import UserPublic
 
+# TODO: Password recovery.
 
 router = APIRouter()
+
+
+@router.post('/register', response_model=UserPublic)
+def register(
+    session: SessionDependency,
+    body: UserRegister,
+) -> Any:
+    user = get_user_by_email(session=session, email=body.email)
+
+    if user:
+        raise HTTPException(status_code=400, detail='Email is already registered')
+
+    params=UserCreate(
+        email=body.email,
+        password=body.password,
+        is_superuser=False,
+    )
+    user = create_user(session=session, params=params)
+    return user
+
 
 @router.get(
     '/',
@@ -34,24 +57,25 @@ def read_users(
 
     return UsersPublic(data=data, count=count)
 
+
 @router.patch(
     '/me',
     response_model=UserPublic,
 )
-def update_user_me(
+def update_me(
     session: SessionDependency,
-    params: UserUpdateMe,
+    body: UserUpdateMe,
     current_user: CurrentUser,
 ) -> Any:
-    if params.email:
-        existing_user = get_user_by_email(session=session, email=params.email)
+    if body.email:
+        existing_user = get_user_by_email(session=session, email=body.email)
         if existing_user and existing_user.id != current_user.id:
             raise HTTPException(
                 status_code=409,
                 detail='User with this email already exists',
             )
 
-    current_user.email = params.email
+    current_user.email = body.email
 
     session.add(current_user)
     session.commit()
@@ -59,27 +83,28 @@ def update_user_me(
 
     return current_user
 
+
 @router.patch(
     '/me/password',
     response_model=Message,
 )
-def update_user_password(
+def update_password(
     session: SessionDependency,
-    params: UserUpdatePassword,
+    body: UserUpdatePassword,
     current_user: CurrentUser,
 ) -> Any:
-    if not verify_password(params.current_password, current_user.hashed_password):
+    if not verify_password(body.current_password, current_user.hashed_password):
         raise HTTPException(
             status_code=400,
             detail='Incorrect password',
         )
-    if params.current_password == params.new_password:
+    if body.current_password == body.new_password:
         raise HTTPException(
             status_code=400,
             detail='New password cannot be the same as the current password',
         )
 
-    hashed_password = get_password_hash(params.new_password)
+    hashed_password = get_password_hash(body.new_password)
     current_user.hashed_password = hashed_password
 
     session.add(current_user)

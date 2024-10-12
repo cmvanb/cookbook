@@ -1,8 +1,8 @@
-import { createContext, useContext } from 'solid-js';
+import { createContext, useContext } from 'solid-js'
 
-import { recipeStore } from '../stores/recipeStore';
+import { recipeStore } from './store'
 
-const RecipeContext = createContext();
+const RecipeContext = createContext()
 
 function RecipeProvider(props) {
     return (
@@ -13,11 +13,11 @@ function RecipeProvider(props) {
         >
             {props.children}
         </RecipeContext.Provider>
-    );
+    )
 }
 
 function useRecipeContext() {
-    return useContext(RecipeContext);
+    return useContext(RecipeContext)
 }
 
-export { RecipeProvider, useRecipeContext };
+export { RecipeProvider, useRecipeContext }
