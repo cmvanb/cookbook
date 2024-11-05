@@ -4,11 +4,11 @@ from typing import Annotated, Any
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.auth.actions import authenticate
+from app.auth.db import authenticate
 from app.auth.models import Token
-from app.auth.utils import CurrentUser
+from app.auth.utils import CurrentUserDep
 from app.core.config import settings
-from app.core.database import SessionDependency
+from app.core.db import SessionDep
 from app.core.security import create_access_token
 from app.users.models import UserPublic
 
@@ -18,7 +18,7 @@ router = APIRouter()
 
 @router.post('/login/access-token')
 def login_access_token(
-    session: SessionDependency,
+    session: SessionDep,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ) -> Token:
     user = authenticate(
@@ -39,5 +39,5 @@ def login_access_token(
 
 
 @router.post('/login/test-token', response_model=UserPublic)
-def test_token(current_user: CurrentUser) -> Any:
+def test_token(current_user: CurrentUserDep) -> Any:
     return current_user

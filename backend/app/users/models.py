@@ -2,13 +2,13 @@ from pydantic import BaseModel, EmailStr
 from sqlalchemy import String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.core.models import Base
+from app.core.models import DbBase
 
 
 # Database layer
 #-------------------------------------------------------------------------------
 
-class DbUser(Base):
+class DbUser(DbBase):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(primary_key=True)

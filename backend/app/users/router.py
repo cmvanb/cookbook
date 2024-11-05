@@ -3,16 +3,17 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select, func
 
-from app.auth.utils import CurrentUser, get_current_active_superuser
-from app.core.database import SessionDependency
+from app.auth.utils import CurrentUserDep, get_current_active_superuser
+from app.core.db import SessionDep
 from app.core.models import Message
 from app.core.security import get_password_hash, verify_password
 from app.users.models import (
     DbUser, UserPublic, UsersPublic, UserCreate, UserRegister,
     UserUpdateMe, UserUpdatePassword
 )
-from app.users.actions import create_user, get_user_by_email
+from app.users.db import create_user, get_user_by_email
 from app.users.models import UserPublic
+
 
 # TODO: Password recovery.
 
@@ -21,7 +22,7 @@ router = APIRouter()
 
 @router.post('/register', response_model=UserPublic)
 def register(
-    session: SessionDependency,
+    session: SessionDep,
     body: UserRegister,
 ) -> Any:
     user = get_user_by_email(session=session, email=body.email)
@@ -44,7 +45,7 @@ def register(
     response_model=UsersPublic,
 )
 def read_users(
-    session: SessionDependency,
+    session: SessionDep,
     skip: int = 0,
     limit: int = 100
 ) -> Any:
@@ -63,9 +64,9 @@ def read_users(
     response_model=UserPublic,
 )
 def update_me(
-    session: SessionDependency,
+    session: SessionDep,
+    current_user: CurrentUserDep,
     body: UserUpdateMe,
-    current_user: CurrentUser,
 ) -> Any:
     if body.email:
         existing_user = get_user_by_email(session=session, email=body.email)
@@ -89,9 +90,9 @@ def update_me(
     response_model=Message,
 )
 def update_password(
-    session: SessionDependency,
+    session: SessionDep,
+    current_user: CurrentUserDep,
     body: UserUpdatePassword,
-    current_user: CurrentUser,
 ) -> Any:
     if not verify_password(body.current_password, current_user.hashed_password):
         raise HTTPException(

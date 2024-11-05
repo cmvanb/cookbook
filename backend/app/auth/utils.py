@@ -8,7 +8,7 @@ from pydantic import ValidationError
 from app.auth.models import TokenPayload
 from app.core import security
 from app.core.config import settings
-from app.core.database import SessionDependency
+from app.core.db import SessionDep
 from app.users.models import DbUser
 
 
@@ -16,9 +16,9 @@ reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f'{settings.API_PREFIX}/login/access-token'
 )
 
-TokenDependency = Annotated[str, Depends(reusable_oauth2)]
+TokenDep = Annotated[str, Depends(reusable_oauth2)]
 
-def get_current_user(session: SessionDependency, token: TokenDependency) -> DbUser:
+def get_current_user(session: SessionDep, token: TokenDep) -> DbUser:
     try:
         payload = jwt.decode(
             token,
@@ -39,9 +39,9 @@ def get_current_user(session: SessionDependency, token: TokenDependency) -> DbUs
 
     return user
 
-CurrentUser = Annotated[DbUser, Depends(get_current_user)]
+CurrentUserDep = Annotated[DbUser, Depends(get_current_user)]
 
-def get_current_active_superuser(current_user: CurrentUser) -> DbUser:
+def get_current_active_superuser(current_user: CurrentUserDep) -> DbUser:
     if not current_user.is_superuser:
         raise HTTPException(
             status_code=403,

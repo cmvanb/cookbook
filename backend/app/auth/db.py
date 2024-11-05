@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.core.security import verify_password
-from app.users.actions import get_user_by_email
+from app.users.db import get_user_by_email
 from app.users.models import DbUser
 
 def authenticate(*, session: Session, email: str, password: str) -> DbUser | None:

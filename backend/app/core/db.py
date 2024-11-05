@@ -6,8 +6,8 @@ from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.core.models import Base
-from app.users.actions import create_user
+from app.core.models import DbBase
+from app.users.db import create_user
 from app.users.models import DbUser, UserCreate
 
 engine = create_engine(str(settings.DATABASE_PATH), echo=True)
@@ -16,10 +16,10 @@ def get_db() -> Generator[Session, None, None]:
     with Session(engine) as session:
         yield session
 
-SessionDependency = Annotated[Session, Depends(get_db)]
+SessionDep = Annotated[Session, Depends(get_db)]
 
 def init_db() -> None:
-    Base.metadata.create_all(bind=engine)
+    DbBase.metadata.create_all(bind=engine)
 
     with Session(engine) as session:
         user = session.execute(
