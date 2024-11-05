@@ -1,3 +1,4 @@
+import Page from '@/core/pages/Page'
 import { useRecipeContext } from '@/recipes/context'
 import '@/recipes/pages/Recipes.css'
 
@@ -6,7 +7,7 @@ function Recipes() {
     const recipes = recipeStore.recipes
 
     return (
-        <>
+        <Page>
             <div class='field large prefix round fill active'>
                 <i class='front'>search</i>
                 <input />
@@ -33,7 +34,7 @@ function Recipes() {
                     )}
                 </For>
             </div>
-        </>
+        </Page>
     )
 }
 

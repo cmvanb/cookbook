@@ -1,10 +1,14 @@
+import Page from '@/core/pages/Page'
+
 function Settings() {
     return (
-        <article>
-            <section class="header center-align">
-                <h4>Settings</h4>
-            </section>
-        </article>
+        <Page>
+            <article>
+                <section class='header center-align'>
+                    <h4>Settings</h4>
+                </section>
+            </article>
+        </Page>
     )
 }
 

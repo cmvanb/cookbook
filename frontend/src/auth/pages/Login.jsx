@@ -5,6 +5,7 @@ import { useNavigate } from '@solidjs/router'
 
 import AuthService from '@/auth/service'
 import FormField from '@/core/components/FormField'
+import Page from '@/core/pages/Page'
 import { isStringWithValue } from '@/core/utils'
 
 function Login() {
@@ -61,46 +62,48 @@ function Login() {
     })
 
     return (
-        <article>
-            <section class='header center-align'>
-                <h4>Log In</h4>
-            </section>
-            <section>
-                <form use:form>
-                    {isStringWithValue(loginError().error_message) && (
-                        <>
-                            <article class='border error-container'>
-                                <h6>{loginError().error_message}</h6>
-                                {loginError().help_message()}
-                            </article>
-                            <br/>
-                        </>
-                    )}
-                    <FormField
-                        name='username'
-                        type='email'
-                        label='Email'
-                        autocomplete
-                        required
-                        errors={errors}
-                    />
-                    <FormField
-                        name='password'
-                        type='password'
-                        label='Password'
-                        required
-                        errors={errors}
-                    />
+        <Page>
+            <article>
+                <section class='header center-align'>
+                    <h4>Log In</h4>
+                </section>
+                <section>
+                    <form use:form>
+                        {isStringWithValue(loginError().error_message) && (
+                            <>
+                                <article class='border error-container'>
+                                    <h6>{loginError().error_message}</h6>
+                                    {loginError().help_message()}
+                                </article>
+                                <br/>
+                            </>
+                        )}
+                        <FormField
+                            name='username'
+                            type='email'
+                            label='Email'
+                            autocomplete
+                            required
+                            errors={errors}
+                        />
+                        <FormField
+                            name='password'
+                            type='password'
+                            label='Password'
+                            required
+                            errors={errors}
+                        />
 
-                    <nav class='row'>
-                        <button type='submit' value='Log In'>Log In</button>
-                        <a href={'/register'}>
-                            <p>Need an account?</p>
-                        </a>
-                    </nav>
-                </form>
-            </section>
-        </article>
+                        <nav class='row'>
+                            <button type='submit' value='Log In'>Log In</button>
+                            <a href={'/register'}>
+                                <p>Need an account?</p>
+                            </a>
+                        </nav>
+                    </form>
+                </section>
+            </article>
+        </Page>
     )
 }
 

@@ -7,11 +7,8 @@ function RouteGuard (props) {
     const navigate = useNavigate()
 
     createEffect(() => {
-        const token = AuthService.getAccessToken()
-
-        if (!token) {
-            navigate('/login', { replace: true })
-            return
+        if (!AuthService.isLoggedIn()) {
+            navigate('/login', { repace: true })
         }
     })
 

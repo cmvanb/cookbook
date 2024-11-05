@@ -5,6 +5,7 @@ import { useNavigate } from '@solidjs/router'
 
 import UsersService from '@/users/service'
 import FormField from '@/core/components/FormField'
+import Page from '@/core/pages/Page'
 import { isStringWithValue } from '@/core/utils'
 
 function Register() {
@@ -16,7 +17,7 @@ function Register() {
         await UsersService.register({ body: data })
 
         setRegisterError({ error_message: '', help_message: null })
-        navigate('/login')
+        navigate('/login',)
     }
 
     const handleRegisterError = (error) => {
@@ -78,53 +79,55 @@ function Register() {
     })
 
     return (
-        <article>
-            <section class='header center-align'>
-                <h4>Register</h4>
-            </section>
-            <section>
-                <form use:form>
-                    {isStringWithValue(registerError().error_message) && (
-                        <>
-                            <article class='border error-container'>
-                                <h6>{registerError().error_message}</h6>
-                                {registerError().help_message()}
-                            </article>
-                            <br/>
-                        </>
-                    )}
-                    <FormField
-                        name='email'
-                        type='email'
-                        label='Email'
-                        autocomplete
-                        required
-                        errors={errors}
-                    />
-                    <FormField
-                        name='password'
-                        type='password'
-                        label='Password'
-                        required
-                        errors={errors}
-                    />
-                    <FormField
-                        name='confirmpassword'
-                        type='password'
-                        label='Confirm password'
-                        required
-                        errors={errors}
-                    />
+        <Page>
+            <article>
+                <section class='header center-align'>
+                    <h4>Register</h4>
+                </section>
+                <section>
+                    <form use:form>
+                        {isStringWithValue(registerError().error_message) && (
+                            <>
+                                <article class='border error-container'>
+                                    <h6>{registerError().error_message}</h6>
+                                    {registerError().help_message()}
+                                </article>
+                                <br/>
+                            </>
+                        )}
+                        <FormField
+                            name='email'
+                            type='email'
+                            label='Email'
+                            autocomplete
+                            required
+                            errors={errors}
+                        />
+                        <FormField
+                            name='password'
+                            type='password'
+                            label='Password'
+                            required
+                            errors={errors}
+                        />
+                        <FormField
+                            name='confirmpassword'
+                            type='password'
+                            label='Confirm password'
+                            required
+                            errors={errors}
+                        />
 
-                    <nav class='row'>
-                        <button type='submit'>Register</button>
-                        <a href={'/login'}>
-                            <p>Have an account?</p>
-                        </a>
-                    </nav>
-                </form>
-            </section>
-        </article>
+                        <nav class='row'>
+                            <button type='submit'>Register</button>
+                            <a href={'/login'}>
+                                <p>Have an account?</p>
+                            </a>
+                        </nav>
+                    </form>
+                </section>
+            </article>
+        </Page>
     )
 }
 
