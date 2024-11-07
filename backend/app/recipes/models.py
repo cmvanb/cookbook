@@ -1,7 +1,7 @@
 from typing import Annotated
 from annotated_types import Len
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from sqlalchemy import String, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -62,6 +62,8 @@ class DbRecipe(DbBase):
 
 # Requests
 class Ingredient(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     class Meta:
         orm_model = DbIngredient
 
@@ -71,15 +73,21 @@ class Ingredient(BaseModel):
     comment: Annotated[str, Field(max_length=255)]
 
 class Instruction(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     class Meta:
         orm_model = DbInstruction
 
     text: Annotated[str, Field(max_length=4000)]
 
 class RecipeBase(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     class Meta:
         orm_model = DbRecipe
 
+    ingredients: Annotated[list[Ingredient], Len(min_length=1)]
+    instructions: Annotated[list[Instruction], Len(min_length=1)]
     title: Annotated[str, Field(max_length=255)]
     author: Annotated[str, Field(max_length=255)]
     description: Annotated[str, Field(max_length=4000)]
@@ -88,15 +96,17 @@ class RecipeBase(BaseModel):
     prep_time: Annotated[int, Field(gt=0)]
     cook_time: Annotated[int, Field(gt=0)]
     image_url: Annotated[str, Field(max_length=255)]
-    ingredients: Annotated[list[Ingredient], Len(min_length=1)]
-    instructions: Annotated[list[Instruction], Len(min_length=1)]
     is_public: bool
 
 # Responses
 class RecipePublic(RecipeBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     owner_id: int
 
 class RecipesPublic(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     data: list[RecipePublic]
     count: int

@@ -1,4 +1,4 @@
-from sqlalchemy import select, update
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.models import parse_pydantic_schema
@@ -22,6 +22,24 @@ def create_recipe(*,
     return recipe
 
 
+def read_recipes(*,
+    session: Session,
+    user_id: int,
+    skip: int = 0,
+    limit: int = 24,
+) -> list[DbRecipe]:
+    """ Read a list of recipes. """
+
+    recipes = list(session.execute(
+        select(DbRecipe)
+            .where(DbRecipe.owner_id == user_id)
+            .offset(skip)
+            .limit(limit)
+    ).scalars().all())
+
+    return recipes
+
+
 def read_recipe(*,
     session: Session,
     recipe_id: int,
@@ -31,8 +49,40 @@ def read_recipe(*,
 
     recipe = session.execute(
         select(DbRecipe)
-            .where(DbRecipe.id == recipe_id)
             .where(DbRecipe.owner_id == user_id)
+            .where(DbRecipe.id == recipe_id)
+    ).scalar_one_or_none()
+
+    return recipe
+
+
+def read_public_recipes(*,
+    session: Session,
+    skip: int = 0,
+    limit: int = 24,
+) -> list[DbRecipe]:
+    """ Read a list of public recipes. """
+
+    recipes = list(session.execute(
+        select(DbRecipe)
+            .where(DbRecipe.is_public == True)
+            .offset(skip)
+            .limit(limit)
+    ).scalars().all())
+
+    return recipes
+
+
+def read_public_recipe(*,
+    session: Session,
+    recipe_id: int,
+) -> DbRecipe | None:
+    """ Read a single public recipe. """
+
+    recipe = session.execute(
+        select(DbRecipe)
+            .where(DbRecipe.is_public == True)
+            .where(DbRecipe.id == recipe_id)
     ).scalar_one_or_none()
 
     return recipe
@@ -48,8 +98,8 @@ def update_recipe(*,
 
     recipe = session.execute(
         select(DbRecipe)
-            .where(DbRecipe.id == recipe_id)
             .where(DbRecipe.owner_id == user_id)
+            .where(DbRecipe.id == recipe_id)
     ).scalar_one_or_none()
 
     if recipe is None:
@@ -76,8 +126,8 @@ def delete_recipe(*,
 
     recipe = session.execute(
         select(DbRecipe)
-            .where(DbRecipe.id == recipe_id)
             .where(DbRecipe.owner_id == user_id)
+            .where(DbRecipe.id == recipe_id)
     ).scalar_one_or_none()
 
     if recipe is None:
@@ -85,3 +135,24 @@ def delete_recipe(*,
 
     session.delete(recipe)
     session.commit()
+
+
+def count_recipes(*,
+    session: Session,
+    user_id: int,
+) -> int:
+    """ Count a users recipes. """
+
+    count = session.query(DbRecipe).filter(DbRecipe.owner_id == user_id).count()
+
+    return count
+
+
+def count_public_recipes(*,
+    session: Session,
+) -> int:
+    """ Count public recipes. """
+
+    count = session.query(DbRecipe).filter(DbRecipe.is_public == True).count()
+
+    return count
