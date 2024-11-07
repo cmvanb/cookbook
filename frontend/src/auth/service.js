@@ -19,6 +19,21 @@ export default class AuthService {
         }
     }
 
+    static async testAccessToken() {
+        try {
+            await request({
+                method: 'POST',
+                url: '/login/test-token',
+                errors: {
+                    401: 'Unauthorized',
+                    403: 'Forbidden',
+                },
+            })
+        } catch (error) {
+            this.logout()
+        }
+    }
+
     static getAccessToken() {
         return localStorage.getItem('access_token')
     }
