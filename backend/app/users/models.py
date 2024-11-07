@@ -21,13 +21,12 @@ class DbUser(DbBase):
 # Transport layer
 #-------------------------------------------------------------------------------
 
-# Shared properties
+# Requests
 class UserBase(BaseModel):
     email: EmailStr
     is_active: bool = True
     is_superuser: bool = False
 
-# API requests
 class UserCreate(UserBase):
     password: str
 
@@ -42,7 +41,7 @@ class UserUpdatePassword(BaseModel):
     current_password: str
     new_password: str
 
-# API responses
+# Responses
 class UserPublic(UserBase):
     id: int
 

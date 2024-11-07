@@ -7,12 +7,11 @@ from app.auth.utils import CurrentUserDep, get_current_active_superuser
 from app.core.db import SessionDep
 from app.core.models import Message
 from app.core.security import get_password_hash, verify_password
+from app.users.db import create_user, get_user_by_email
 from app.users.models import (
     DbUser, UserPublic, UsersPublic, UserCreate, UserRegister,
     UserUpdateMe, UserUpdatePassword
 )
-from app.users.db import create_user, get_user_by_email
-from app.users.models import UserPublic
 
 
 # TODO: Password recovery.

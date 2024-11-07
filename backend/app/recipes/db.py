@@ -2,7 +2,7 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from app.core.models import parse_pydantic_schema
-from app.recipes.models import DbRecipe, RecipeBase, RecipeCreate
+from app.recipes.models import DbRecipe, RecipeBase
 
 
 def create_recipe(*,

@@ -60,8 +60,8 @@ class DbRecipe(DbBase):
 # Transport layer
 #-------------------------------------------------------------------------------
 
-# Shared properties
-class IngredientBase(BaseModel):
+# Requests
+class Ingredient(BaseModel):
     class Meta:
         orm_model = DbIngredient
 
@@ -70,7 +70,7 @@ class IngredientBase(BaseModel):
     unit: Annotated[str, Field(max_length=255)]
     comment: Annotated[str, Field(max_length=255)]
 
-class InstructionBase(BaseModel):
+class Instruction(BaseModel):
     class Meta:
         orm_model = DbInstruction
 
@@ -88,15 +88,11 @@ class RecipeBase(BaseModel):
     prep_time: Annotated[int, Field(gt=0)]
     cook_time: Annotated[int, Field(gt=0)]
     image_url: Annotated[str, Field(max_length=255)]
-    ingredients: Annotated[list[IngredientBase], Len(min_length=1)]
-    instructions: Annotated[list[InstructionBase], Len(min_length=1)]
+    ingredients: Annotated[list[Ingredient], Len(min_length=1)]
+    instructions: Annotated[list[Instruction], Len(min_length=1)]
     is_public: bool
 
-# API requests
-class RecipeCreate(RecipeBase):
-    owner_id: int
-
-# API responses
+# Responses
 class RecipePublic(RecipeBase):
     id: int
     owner_id: int
