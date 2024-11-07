@@ -10,6 +10,7 @@ export default class AuthService {
             formData: formData,
             mediaType: 'application/x-www-form-urlencoded',
             errors: {
+                400: 'Bad Request',
                 422: 'Validation Error',
             },
         })
