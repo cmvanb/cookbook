@@ -13,35 +13,37 @@ function Recipes() {
 
     const [recipes] = createResource(
         async () => {
-            await new Promise((resolve) => setTimeout(resolve, 200))
+            await new Promise((resolve) => setTimeout(resolve, 500))
             const response = await RecipeService.getRecipes()
             return response.data
         })
 
     return (
         <Page>
-            <div class='field large prefix round fill active'>
-                <i class='front'>search</i>
-                <input />
-                <menu class='min'>
-                    <div class='field large prefix suffix no-margin fixed'>
-                        <i class='front'>arrow_back</i>
-                        <input
-                            placeholder='Search'
-                            onInput={(e) => setSearchFilter(e.target.value)}
-                        />
-                        <i class='front'>close</i>
-                    </div>
-                </menu>
-            </div>
             <Switch>
                 <Match when={recipes.loading}>
-                    <p>Loading...</p>
+                    <div>
+                        <progress class='circle large center'></progress>
+                    </div>
                 </Match>
                 <Match when={recipes.error}>
                     <p>Error: {recipes.error.message}</p>
                 </Match>
                 <Match when={recipes()}>
+                    <div class='field large prefix round fill active'>
+                        <i class='front'>search</i>
+                        <input />
+                        <menu class='min'>
+                            <div class='field large prefix suffix no-margin fixed'>
+                                <i class='front'>arrow_back</i>
+                                <input
+                                    placeholder='Search'
+                                    onInput={(e) => setSearchFilter(e.target.value)}
+                                />
+                                <i class='front'>close</i>
+                            </div>
+                        </menu>
+                    </div>
                     <div class='grid'>
                         {recipes().map((recipe) => (
                             <RecipeCard recipe={recipe}/>

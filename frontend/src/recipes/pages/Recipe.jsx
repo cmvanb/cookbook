@@ -13,22 +13,24 @@ function Recipe() {
 
     const [recipe] = createResource(
         async () => {
-            await new Promise((resolve) => setTimeout(resolve, 200))
+            await new Promise((resolve) => setTimeout(resolve, 500))
             const response = await RecipeService.getRecipe(params.id)
             return response
         })
 
     return (
         <Page>
-            <article class='medium-elevate no-padding'>
-                <Switch>
-                    <Match when={recipe.loading}>
-                        <p>Loading...</p>
-                    </Match>
-                    <Match when={recipe.error}>
-                        <p>Error: {recipe.error.message}</p>
-                    </Match>
-                    <Match when={recipe()}>
+            <Switch>
+                <Match when={recipe.loading}>
+                    <div>
+                        <progress class='circle large center'></progress>
+                    </div>
+                </Match>
+                <Match when={recipe.error}>
+                    <p>Error: {recipe.error.message}</p>
+                </Match>
+                <Match when={recipe()}>
+                    <article class='medium-elevate no-padding'>
                         <img class='responsive' id='recipe-image' src='https://www.teaforturmeric.com/wp-content/uploads/2018/06/Chicken-Korma-in-pan.jpg' />
                         <nav id='recipe-close-button'>
                             <button class='transparent circle extra' onClick={() => location.href='/recipes'}>
@@ -47,9 +49,9 @@ function Recipe() {
                             </div>
                             <RecipeColumns recipe={recipe()} />
                         </div>
-                    </Match>
-                </Switch>
-            </article>
+                    </article>
+                </Match>
+            </Switch>
         </Page>
     )
 }

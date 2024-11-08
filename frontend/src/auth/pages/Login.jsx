@@ -16,7 +16,6 @@ function Login() {
         await AuthService.loginAccessToken({ formData: data })
 
         if (AuthService.isLoggedIn()) {
-            setLoginError({ error_message: '', help_message: null })
             navigate('/recipes')
         }
     }
@@ -58,7 +57,6 @@ function Login() {
         await AuthService.testAccessToken()
 
         if (AuthService.isLoggedIn()) {
-            setLoginError({ error_message: '', help_message: null })
             navigate('/recipes')
         }
     })

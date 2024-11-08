@@ -1,8 +1,9 @@
 import { createForm } from '@felte/solid'
 import { reporter } from '@felte/reporter-solid'
-import { createSignal } from 'solid-js'
+import { createEffect, createSignal } from 'solid-js'
 import { useNavigate } from '@solidjs/router'
 
+import AuthService from '@/auth/service'
 import UsersService from '@/users/service'
 import { FormField, Page } from '@/core/components'
 import { isStringWithValue } from '@/core/utils'
@@ -15,7 +16,6 @@ function Register() {
     const handleSubmit = async (data) => {
         await UsersService.register({ body: data })
 
-        setRegisterError({ error_message: '', help_message: null })
         navigate('/login',)
     }
 
@@ -41,6 +41,14 @@ function Register() {
                 break
         }
     }
+
+    createEffect(async () => {
+        await AuthService.testAccessToken()
+
+        if (AuthService.isLoggedIn()) {
+            navigate('/recipes')
+        }
+    })
 
     const { form, errors } = createForm({
         onSubmit: handleSubmit,
