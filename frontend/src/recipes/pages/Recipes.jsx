@@ -1,7 +1,7 @@
 import { createResource, createSignal, Switch, Match } from 'solid-js'
 
-import Page from '@/core/pages/Page'
-import RecipeCard from '@/recipes/components/RecipeCard'
+import { Page } from '@/core/components'
+import { RecipeCard } from '@/recipes/components'
 import RecipeService from '@/recipes/service'
 
 import '@/recipes/pages/Recipes.css'

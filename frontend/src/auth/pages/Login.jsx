@@ -4,8 +4,7 @@ import { createEffect, createSignal } from 'solid-js'
 import { useNavigate } from '@solidjs/router'
 
 import AuthService from '@/auth/service'
-import FormField from '@/core/components/FormField'
-import Page from '@/core/pages/Page'
+import { FormField, Page } from '@/core/components'
 import { isStringWithValue } from '@/core/utils'
 
 function Login() {

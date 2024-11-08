@@ -1,4 +1,4 @@
-import Page from '@/core/pages/Page'
+import { Page } from '@/core/components'
 
 function Splash() {
     return (

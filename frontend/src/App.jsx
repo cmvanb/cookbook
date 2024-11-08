@@ -1,13 +1,10 @@
 import { Router, Route } from '@solidjs/router'
 
-import RouteGuard from '@/auth/components/RouteGuard'
-import Login from '@/auth/pages/Login'
-import NotFound from '@/core/pages/NotFound'
-import Settings from '@/core/pages/Settings'
-import Splash from '@/core/pages/Splash'
-import Recipe from '@/recipes/pages/Recipe'
-import Recipes from '@/recipes/pages/Recipes'
-import Register from '@/users/pages/Register'
+import { RouteGuard } from '@/auth/components'
+import { Login } from '@/auth/pages'
+import { NotFound, Settings, Splash } from '@/core/pages'
+import { Recipe, Recipes } from '@/recipes/pages'
+import { Register } from '@/users/pages'
 
 function App() {
     return (

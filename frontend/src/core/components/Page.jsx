@@ -1,7 +1,6 @@
 import { createSignal } from 'solid-js'
 
-import TopBar from '@/core/components/TopBar'
-import DrawerMenu from '@/core/components/DrawerMenu'
+import { DrawerMenu, TopBar } from '@/core/components'
 
 function Page(props) {
     const [menuOpen, setMenuOpen] = createSignal(false)

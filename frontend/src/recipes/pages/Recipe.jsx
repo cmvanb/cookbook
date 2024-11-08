@@ -1,11 +1,8 @@
 import { createResource, Switch, Match } from 'solid-js'
 import { useParams } from '@solidjs/router'
 
-import Page from '@/core/pages/Page'
-import RecipeHeader from '@/recipes/components/RecipeHeader'
-import RecipeAttributes from '@/recipes/components/RecipeAttributes'
-import RecipeControls from '@/recipes/components/RecipeControls'
-import RecipeColumns from '@/recipes/components/RecipeColumns'
+import { Page } from '@/core/components'
+import { RecipeAttributes, RecipeColumns, RecipeControls, RecipeHeader } from '@/recipes/components'
 import RecipeService from '@/recipes/service'
 
 import '@/recipes/pages/Recipe.css'
