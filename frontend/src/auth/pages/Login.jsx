@@ -1,6 +1,6 @@
 import { createForm } from '@felte/solid'
 import { reporter } from '@felte/reporter-solid'
-import { createSignal } from 'solid-js'
+import { createEffect, createSignal } from 'solid-js'
 import { useNavigate } from '@solidjs/router'
 
 import AuthService from '@/auth/service'
@@ -54,6 +54,15 @@ function Login() {
                 break
         }
     }
+
+    createEffect(async () => {
+        await AuthService.testAccessToken()
+
+        if (AuthService.isLoggedIn()) {
+            setLoginError({ error_message: '', help_message: null })
+            navigate('/recipes')
+        }
+    })
 
     const { form, errors } = createForm({
         onSubmit: handleSubmit,
