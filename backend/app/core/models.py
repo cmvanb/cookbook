@@ -15,6 +15,7 @@ class DbBase(DeclarativeBase):
 class Message(BaseModel):
     message: str
 
+
 # Utility functions
 #-------------------------------------------------------------------------------
 

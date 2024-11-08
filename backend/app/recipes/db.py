@@ -103,7 +103,7 @@ def update_recipe(*,
     ).scalar_one_or_none()
 
     if recipe is None:
-        return None
+        raise KeyError('Recipe not found')
 
     schema = parse_pydantic_schema(params)
 
