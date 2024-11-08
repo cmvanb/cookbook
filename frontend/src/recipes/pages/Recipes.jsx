@@ -1,10 +1,22 @@
+import { createResource, createSignal, Switch, Match } from 'solid-js'
+
 import Page from '@/core/pages/Page'
-import { useRecipeContext } from '@/recipes/context'
+import RecipeCard from '@/recipes/components/RecipeCard'
+import RecipeService from '@/recipes/service'
+
 import '@/recipes/pages/Recipes.css'
 
+
 function Recipes() {
-    const { recipeStore } = useRecipeContext()
-    const recipes = recipeStore.recipes
+    // TODO: Implement search filter.
+    const [searchFilter, setSearchFilter] = createSignal('')
+
+    const [recipes] = createResource(
+        async () => {
+            await new Promise((resolve) => setTimeout(resolve, 200))
+            const response = await RecipeService.getRecipes()
+            return response.data
+        })
 
     return (
         <Page>
@@ -14,26 +26,29 @@ function Recipes() {
                 <menu class='min'>
                     <div class='field large prefix suffix no-margin fixed'>
                         <i class='front'>arrow_back</i>
-                        <input />
+                        <input
+                            placeholder='Search'
+                            onInput={(e) => setSearchFilter(e.target.value)}
+                        />
                         <i class='front'>close</i>
                     </div>
                 </menu>
             </div>
-            <div class='grid'>
-                <For each={Object.keys(recipes)}>
-                    {(recipeId) => (
-                        <article class='recipe-card medium-elevate no-padding s12 m6 l4'>
-                            <a href={`/recipes/${recipeId}`}>
-                                <img class='responsive small' src='https://www.teaforturmeric.com/wp-content/uploads/2018/06/Chicken-Korma-in-pan.jpg' />
-                                <div class='padding'>
-                                    <h6>{recipes[recipeId].title}</h6>
-                                    <p>{recipes[recipeId].description}</p>
-                                </div>
-                            </a>
-                        </article>
-                    )}
-                </For>
-            </div>
+            <Switch>
+                <Match when={recipes.loading}>
+                    <p>Loading...</p>
+                </Match>
+                <Match when={recipes.error}>
+                    <p>Error: {recipes.error.message}</p>
+                </Match>
+                <Match when={recipes()}>
+                    <div class='grid'>
+                        {recipes().map((recipe) => (
+                            <RecipeCard recipe={recipe}/>
+                        ))}
+                    </div>
+                </Match>
+            </Switch>
         </Page>
     )
 }

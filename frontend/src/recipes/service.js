@@ -1,5 +1,6 @@
 import { request } from '@/core/api/request'
 
+
 export default class RecipeService {
 
     static async createRecipe(data) {
