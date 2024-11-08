@@ -8,7 +8,7 @@ import RecipeService from '@/recipes/service'
 import '@/recipes/pages/Recipe.css'
 
 
-function Recipe() {
+function ViewRecipe() {
     const params = useParams()
 
     const [recipe] = createResource(
@@ -33,7 +33,7 @@ function Recipe() {
                     <article class='medium-elevate no-padding'>
                         <img class='responsive' id='recipe-image' src='https://www.teaforturmeric.com/wp-content/uploads/2018/06/Chicken-Korma-in-pan.jpg' />
                         <nav id='recipe-close-button'>
-                            <button class='transparent circle extra' onClick={() => location.href='/recipes'}>
+                            <button class='transparent circle extra' onClick={() => location.href = '/recipes'}>
                                 <i>close</i>
                             </button>
                         </nav>
@@ -44,9 +44,7 @@ function Recipe() {
                                 <p>{recipe().description}</p>
                             </section>
                             <RecipeControls recipe={recipe()} />
-                            <div>
-                                <hr class='large' />
-                            </div>
+                            <hr class='large' />
                             <RecipeColumns recipe={recipe()} />
                         </div>
                     </article>
@@ -56,4 +54,4 @@ function Recipe() {
     )
 }
 
-export default Recipe
+export default ViewRecipe

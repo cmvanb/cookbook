@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 from annotated_types import Len
 
 from pydantic import BaseModel, Field, ConfigDict
@@ -92,10 +92,9 @@ class RecipeBase(BaseModel):
     author: Annotated[str, Field(max_length=255)]
     description: Annotated[str, Field(max_length=4000)]
     source_url: Annotated[str, Field(max_length=255)]
-    servings: Annotated[int, Field(gt=0)]
-    prep_time: Annotated[int, Field(gt=0)]
-    cook_time: Annotated[int, Field(gt=0)]
-    image_url: Annotated[str, Field(max_length=255)]
+    servings: Annotated[int, Field(gt=0, lt=1000000000)]
+    prep_time: Annotated[int, Field(gt=0, lt=1000000000)]
+    cook_time: Annotated[int, Field(gt=0, lt=1000000000)]
     is_public: bool
 
 # Responses
@@ -104,6 +103,7 @@ class RecipePublic(RecipeBase):
 
     id: int
     owner_id: int
+    image_url: Annotated[Optional[str], Field(max_length=255)]
 
 class RecipesPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)

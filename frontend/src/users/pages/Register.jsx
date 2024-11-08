@@ -4,39 +4,42 @@ import { createEffect, createSignal } from 'solid-js'
 import { useNavigate } from '@solidjs/router'
 
 import AuthService from '@/auth/service'
-import UsersService from '@/users/service'
-import { FormField, Page } from '@/core/components'
+import { ErrorCard, FormField, Page } from '@/core/components'
 import { isStringWithValue } from '@/core/utils'
+import { validate_all, isValidEmail } from '@/core/validation'
+import UsersService from '@/users/service'
 
 function Register() {
     const navigate = useNavigate()
 
-    const [registerError, setRegisterError] = createSignal({ error_message: '', help_message: null })
+    const [validationError, setValidationError] = createSignal({
+        message: null,
+        renderHelp: null,
+        details: null,
+    })
 
     const handleSubmit = async (data) => {
         await UsersService.register({ body: data })
 
-        navigate('/login',)
+        navigate('/login')
     }
 
-    const handleRegisterError = (error) => {
+    const handleError = (error) => {
         switch (error.status) {
             case 400:
                 if (error.body.detail === 'Email is already registered') {
-                    setRegisterError({
-                        error_message: 'Email is already registered',
-                        help_message: () => (
+                    setValidationError({
+                        message: 'Email is already registered',
+                        renderHelp: () => (
                             <p>Try <a class='link' href={'/login'}>logging in</a>.</p>
                         ),
                     })
                     break
                 }
             default:
-                setRegisterError({
-                    error_message: `Server error ${error.status}: ${error.statusText}`,
-                    help_message: () => (
-                        <p>Detail: {error.body.detail}</p>
-                    ),
+                setValidationError({
+                    message: `Server error ${error.status}: ${error.statusText}`,
+                    details: error.body.detail,
                 })
                 break
         }
@@ -52,34 +55,32 @@ function Register() {
 
     const { form, errors } = createForm({
         onSubmit: handleSubmit,
-        onError: handleRegisterError,
+        onError: handleError,
         extend: [reporter],
         validate: (values) => {
             const errors = {}
 
-            if (!values.email
-                || !/^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/.test(values.email)) {
-                errors.email = 'Must be a valid email'
-            }
-
-            if (!values.password) {
-                errors.password = 'Must not be empty'
-            }
-
-            if (values.password
-                && values.password.length < 8) {
-                errors.password = 'Must be at least 8 characters'
-            }
-
-            if (!values.confirmpassword) {
-                errors.confirmpassword = 'Please confirm your password'
-            }
-
-            if (values.password
-                && values.confirmpassword
-                && values.password !== values.confirmpassword) {
-                errors.confirmpassword = 'Passwords must match'
-            }
+            errors.email = validate_all(
+                values.email,
+                [(v) => !isStringWithValue(v),
+                    'Email is required'],
+                [(v) => v && !isValidEmail(v),
+                    'Must be a valid email'],
+            )
+            errors.password = validate_all(
+                values.password,
+                [(v) => !isStringWithValue(v),
+                    'Password is required'],
+                [(v) => v && v.length < 8,
+                    'Must be at least 8 characters'],
+            )
+            errors.confirmpassword = validate_all(
+                values.confirmpassword,
+                [(v) => !isStringWithValue(v),
+                    'Please confirm your password'],
+                [(v) => v && values.password && v !== values.password,
+                    'Passwords must match'],
+            )
 
             return errors
         },
@@ -93,14 +94,12 @@ function Register() {
                 </section>
                 <section>
                     <form use:form>
-                        {isStringWithValue(registerError().error_message) && (
-                            <>
-                                <article class='border error-container'>
-                                    <h6>{registerError().error_message}</h6>
-                                    {registerError().help_message()}
-                                </article>
-                                <br/>
-                            </>
+                        {validationError().message !== null && (
+                            <ErrorCard
+                                message={validationError().message}
+                                details={validationError().details}
+                                renderHelp={validationError().renderHelp}
+                            />
                         )}
                         <FormField
                             name='email'

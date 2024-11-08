@@ -4,13 +4,16 @@ import { createEffect, createSignal } from 'solid-js'
 import { useNavigate } from '@solidjs/router'
 
 import AuthService from '@/auth/service'
-import { FormField, Page } from '@/core/components'
-import { isStringWithValue } from '@/core/utils'
+import { ErrorCard, FormField, Page } from '@/core/components'
 
 function Login() {
     const navigate = useNavigate()
 
-    const [loginError, setLoginError] = createSignal({ error_message: '', help_message: null })
+    const [validationError, setValidationError] = createSignal({
+        message: null,
+        renderHelp: null,
+        details: null,
+    })
 
     const handleSubmit = async (data) => {
         await AuthService.loginAccessToken({ formData: data })
@@ -20,34 +23,32 @@ function Login() {
         }
     }
 
-    const handleLoginError = (error) => {
+    const handleError = (error) => {
         switch (error.status) {
             case 400:
                 if (error.body.detail === 'Incorrect email or password') {
-                    setLoginError({
-                        error_message: 'Incorrect email or password',
+                    setValidationError({
+                        message: 'Incorrect email or password',
                         /* TODO: Password reset link */
-                        help_message: () => (
+                        renderHelp: () => (
                             <p>Try entering your information again.</p>
                         ),
                     })
                     break
                 }
                 if (error.body.detail === 'Inactive user') {
-                    setLoginError({
-                        error_message: 'Your account is inactive',
-                        help_message: () => (
+                    setValidationError({
+                        message: 'Your account is inactive',
+                        renderHelp: () => (
                             <p>Please contact your system administrator.</p>
                         ),
                     })
                     break
                 }
             default:
-                setLoginError({
-                    error_message: `Server error ${error.status}: ${error.statusText}`,
-                    help_message: () => (
-                        <p>Detail: {error.body.detail}</p>
-                    ),
+                setValidationError({
+                    message: `Server error ${error.status}: ${error.statusText}`,
+                    details: error.body.detail,
                 })
                 break
         }
@@ -63,7 +64,7 @@ function Login() {
 
     const { form, errors } = createForm({
         onSubmit: handleSubmit,
-        onError: handleLoginError,
+        onError: handleError,
         extend: [reporter],
     })
 
@@ -75,14 +76,12 @@ function Login() {
                 </section>
                 <section>
                     <form use:form>
-                        {isStringWithValue(loginError().error_message) && (
-                            <>
-                                <article class='border error-container'>
-                                    <h6>{loginError().error_message}</h6>
-                                    {loginError().help_message()}
-                                </article>
-                                <br/>
-                            </>
+                        {validationError().message !== null && (
+                            <ErrorCard
+                                message={validationError().message}
+                                details={validationError().details}
+                                renderHelp={validationError().renderHelp}
+                            />
                         )}
                         <FormField
                             name='username'
@@ -101,7 +100,9 @@ function Login() {
                         />
 
                         <nav class='row'>
-                            <button type='submit' value='Log In'>Log In</button>
+                            <button type='submit' value='Log In'>
+                                Log In
+                            </button>
                             <a href={'/register'}>
                                 <p>Need an account?</p>
                             </a>
