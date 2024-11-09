@@ -22,8 +22,7 @@ app.add_middleware(
 
 app.include_router(api_router, prefix=settings.API_PREFIX)
 
-@app.get('/')
-def root():
-    return {'message': 'Welcome to FastAPI!'}
-
 # TODO: Serve frontend application
+# @app.get('/')
+# def root():
+#     return {'message': 'Welcome to FastAPI!'}
