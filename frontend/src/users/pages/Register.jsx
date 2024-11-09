@@ -12,10 +12,10 @@ import UsersService from '@/users/service'
 function Register() {
     const navigate = useNavigate()
 
-    const [validationError, setValidationError] = createSignal({
+    const [serverError, setServerError] = createSignal({
         message: null,
         renderHelp: null,
-        details: null,
+        detail: null,
     })
 
     const handleSubmit = async (data) => {
@@ -28,7 +28,7 @@ function Register() {
         switch (error.status) {
             case 400:
                 if (error.body.detail === 'Email is already registered') {
-                    setValidationError({
+                    setServerError({
                         message: 'Email is already registered',
                         renderHelp: () => (
                             <p>Try <a class='link' href={'/login'}>logging in</a>.</p>
@@ -37,9 +37,9 @@ function Register() {
                     break
                 }
             default:
-                setValidationError({
+                setServerError({
                     message: `Server error ${error.status}: ${error.statusText}`,
-                    details: error.body.detail,
+                    detail: error.body.detail,
                 })
                 break
         }
@@ -94,11 +94,11 @@ function Register() {
                 </section>
                 <section>
                     <form use:form>
-                        {validationError().message !== null && (
+                        {serverError().message !== null && (
                             <ErrorCard
-                                message={validationError().message}
-                                details={validationError().details}
-                                renderHelp={validationError().renderHelp}
+                                message={serverError().message}
+                                detail={serverError().detail}
+                                renderHelp={serverError().renderHelp}
                             />
                         )}
                         <FormField

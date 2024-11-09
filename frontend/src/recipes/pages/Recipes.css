@@ -1,3 +1,7 @@
+.recipe-card {
+    overflow: hidden;
+}
+
 .recipe-card p {
     /* Multi-line truncate with webkit.
         see: https://drafts.csswg.org/css-overflow-3/#webkit-line-clamp */

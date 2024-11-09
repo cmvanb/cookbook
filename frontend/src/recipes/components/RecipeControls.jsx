@@ -13,7 +13,7 @@ function RecipeControls({ recipe }) {
         navigate('/recipes');
     }
 
-    const exportRecipe = () => console.error('exportRecipe not implemented');
+    const exportRecipe = () => console.error('exportRecipe not implemented')
 
     return (
         <section id='recipe-controls' class='content'>
@@ -32,7 +32,7 @@ function RecipeControls({ recipe }) {
                 </button>
             </nav>
         </section>
-    );
+    )
 }
 
 export default RecipeControls

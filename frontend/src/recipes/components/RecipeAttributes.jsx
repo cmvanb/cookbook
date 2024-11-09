@@ -14,7 +14,7 @@ function RecipeAttributes({ recipe }) {
                 <span>Serves: {recipe.servings}</span>
             </div>
         </section>
-    );
+    )
 }
 
 export default RecipeAttributes

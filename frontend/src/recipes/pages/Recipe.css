@@ -43,6 +43,19 @@
     border-radius: 0;
 }
 
+.file-upload-button {
+    margin: 0;
+}
+
+.file-upload-text {
+    position: absolute;
+    inset: auto auto 0 1rem;
+    transform: translateY(100%);
+    font-size: .75rem;
+    background: none!important;
+    padding-block-start: .125rem;
+}
+
 /*
 #recipe-nutrition {
     margin-top: 56rem;

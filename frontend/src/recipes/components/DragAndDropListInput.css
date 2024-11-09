@@ -1,0 +1,56 @@
+.dnd-field {
+    margin-block-start: 1rem;
+    margin-block-end: 2rem;
+}
+
+.dnd-label {
+    position: absolute;
+    inset: -.5rem auto auto 1rem;
+    display: flex;
+    inline-size: calc(100% - 5rem);
+    font-size: .75rem;
+    transition: all .2s;
+    gap: .25rem;
+    white-space: nowrap;
+    block-size: 1rem;
+    line-height: 1rem;
+    z-index: 1;
+}
+
+.dnd-border {
+    border: .0625rem solid var(--outline);
+    border-radius: 4px;
+    clip-path: polygon(
+        -2% -2%,
+        .75rem -2%,
+        .75rem .5rem,
+        5.3rem .5rem,
+        5.3rem -2%,
+        102% -2%,
+        102% 102%,
+        -2% 102%
+    );
+    padding: 0.75rem 1.25rem calc(7.5%);
+}
+
+.dnd-item {
+    background-color: var(--surface-container-low);
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+}
+
+.dnd-item-input {
+    all: unset;
+    font-family: inherit;
+    font-size: 1rem;
+    inline-size: 100%;
+    background: none;
+    cursor: text;
+}
+
+.dnd-add-button {
+    position: absolute;
+    inset: calc(100% - 3.0rem) 0rem;
+    margin: 0 1rem;
+}
