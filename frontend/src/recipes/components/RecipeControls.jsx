@@ -1,7 +1,17 @@
+import { useNavigate } from '@solidjs/router';
+
+import RecipeService from '@/recipes/service'
+
 function RecipeControls({ recipe }) {
+    const navigate = useNavigate();
+
     const editRecipe = () => console.error('editRecipe not implemented');
 
-    const deleteRecipe = () => console.error('deleteRecipe not implemented');
+    const deleteRecipe = async () => {
+        await RecipeService.deleteRecipe(recipe.id);
+
+        navigate('/recipes');
+    }
 
     const exportRecipe = () => console.error('exportRecipe not implemented');
 
