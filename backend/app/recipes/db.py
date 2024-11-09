@@ -9,10 +9,12 @@ def create_recipe(*,
     session: Session,
     user_id: int,
     params: RecipeBase,
+    image_url: str | None = None,
 ) -> DbRecipe:
     """ Create a new recipe. """
 
     schema = parse_pydantic_schema(params)
+    schema['image_url'] = image_url
     recipe = DbRecipe(**schema, owner_id=user_id)
 
     session.add(recipe)

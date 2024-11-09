@@ -4,13 +4,11 @@ import { request } from '@/core/api/request'
 export default class RecipeService {
 
     static async createRecipe(data) {
-        const { body } = data
-
         const response = await request({
             method: 'POST',
             url: '/recipes/create',
-            body: body,
-            mediaType: 'application/json',
+            formData: { data },
+            mediaType: 'multipart/form-data',
             errors: {
                 401: 'Unauthorized',
                 403: 'Forbidden',

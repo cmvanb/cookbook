@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from typing import Optional
+from fastapi import APIRouter, HTTPException, Form, UploadFile
 
 from app.auth.utils import CurrentUserDep
 from app.core.db import SessionDep
@@ -17,12 +18,19 @@ router = APIRouter()
 def create(
     session: SessionDep,
     current_user: CurrentUserDep,
-    body: RecipeBase,
+    data: RecipeBase = Form(...),
+    file: Optional[UploadFile] = None,
 ):
+    image_url = None
+    if file:
+        image_url = file.filename
+        # TODO: Store file.
+
     recipe = create_recipe(
         session=session,
         user_id=current_user.id,
-        params=body,
+        params=data,
+        image_url=image_url,
     )
 
     return recipe

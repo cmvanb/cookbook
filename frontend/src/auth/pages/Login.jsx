@@ -9,10 +9,10 @@ import { ErrorCard, FormField, Page } from '@/core/components'
 function Login() {
     const navigate = useNavigate()
 
-    const [validationError, setValidationError] = createSignal({
+    const [serverError, setServerError] = createSignal({
         message: null,
         renderHelp: null,
-        details: null,
+        detail: null,
     })
 
     const handleSubmit = async (data) => {
@@ -27,7 +27,7 @@ function Login() {
         switch (error.status) {
             case 400:
                 if (error.body.detail === 'Incorrect email or password') {
-                    setValidationError({
+                    setServerError({
                         message: 'Incorrect email or password',
                         /* TODO: Password reset link */
                         renderHelp: () => (
@@ -37,7 +37,7 @@ function Login() {
                     break
                 }
                 if (error.body.detail === 'Inactive user') {
-                    setValidationError({
+                    setServerError({
                         message: 'Your account is inactive',
                         renderHelp: () => (
                             <p>Please contact your system administrator.</p>
@@ -46,9 +46,9 @@ function Login() {
                     break
                 }
             default:
-                setValidationError({
+                setServerError({
                     message: `Server error ${error.status}: ${error.statusText}`,
-                    details: error.body.detail,
+                    detail: error.body.detail,
                 })
                 break
         }
@@ -76,11 +76,11 @@ function Login() {
                 </section>
                 <section>
                     <form use:form>
-                        {validationError().message !== null && (
+                        {serverError().message !== null && (
                             <ErrorCard
-                                message={validationError().message}
-                                details={validationError().details}
-                                renderHelp={validationError().renderHelp}
+                                message={serverError().message}
+                                detail={serverError().detail}
+                                renderHelp={serverError().renderHelp}
                             />
                         )}
                         <FormField

@@ -7,6 +7,7 @@ import { render } from 'solid-js/web'
 
 // Local styles will override global styles.
 import 'beercss'
+import 'material-dynamic-colors';
 import './index.css'
 
 import App from './App'

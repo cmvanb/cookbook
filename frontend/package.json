@@ -18,9 +18,12 @@
   "dependencies": {
     "@felte/reporter-solid": "^1.2.11",
     "@felte/solid": "^1.2.14",
+    "@solid-primitives/upload": "^0.0.117",
     "@solidjs/router": "^0.14.7",
     "axios": "^1.7.7",
     "beercss": "^3.7.8",
+    "material-dynamic-colors": "^1.1.2",
+    "solid-dnd-directive": "^0.2.0",
     "solid-js": "^1.8.11"
   }
 }

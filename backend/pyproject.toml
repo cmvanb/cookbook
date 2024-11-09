@@ -7,6 +7,7 @@ dependencies = [
     "fastapi[standard]",
     "pydantic",
     "pydantic-settings",
+    "python-multipart",
     "sqlalchemy",
     "pyjwt",
     "passlib[bcrypt]",

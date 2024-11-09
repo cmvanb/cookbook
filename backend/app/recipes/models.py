@@ -1,7 +1,8 @@
-from typing import Annotated, Optional
 from annotated_types import Len
+from typing import Annotated, Optional
+import json
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, model_validator
 from sqlalchemy import String, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -19,9 +20,6 @@ class DbIngredient(DbBase):
     recipe: Mapped['DbRecipe'] = relationship(back_populates='ingredients')
 
     text: Mapped[str] = mapped_column(String(255))
-    count: Mapped[float]
-    unit: Mapped[str] = mapped_column(String(255))
-    comment: Mapped[str] = mapped_column(String(255))
 
 class DbInstruction(DbBase):
     __tablename__ = 'instructions'
@@ -53,8 +51,8 @@ class DbRecipe(DbBase):
     servings: Mapped[int]
     prep_time: Mapped[int]
     cook_time: Mapped[int]
-    image_url: Mapped[str] = mapped_column(String(255))
     is_public: Mapped[bool] = mapped_column(Boolean)
+    image_url: Mapped[Optional[str]] = mapped_column(String(255))
 
 
 # Transport layer
@@ -68,9 +66,6 @@ class Ingredient(BaseModel):
         orm_model = DbIngredient
 
     text: Annotated[str, Field(max_length=255)]
-    count: Annotated[float, Field(gt=0)]
-    unit: Annotated[str, Field(max_length=255)]
-    comment: Annotated[str, Field(max_length=255)]
 
 class Instruction(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -85,6 +80,14 @@ class RecipeBase(BaseModel):
 
     class Meta:
         orm_model = DbRecipe
+
+    # NOTE: Necessary to process form data as JSON.
+    @model_validator(mode='before')
+    @classmethod
+    def validate_to_json(cls, value):
+        if isinstance(value, str):
+            return cls(**json.loads(value))
+        return value
 
     ingredients: Annotated[list[Ingredient], Len(min_length=1)]
     instructions: Annotated[list[Instruction], Len(min_length=1)]
