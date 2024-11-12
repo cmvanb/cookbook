@@ -72,13 +72,11 @@ export default class RecipeService {
     }
 
     static async updateRecipe(id, data) {
-        const { body } = data
-
         const response = await request({
             method: 'PUT',
             url: `/recipes/update/${id}`,
-            body: body,
-            mediaType: 'application/json',
+            formData: { data },
+            mediaType: 'multipart/form-data',
             errors: {
                 401: 'Unauthorized',
                 403: 'Forbidden',

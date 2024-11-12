@@ -5,7 +5,9 @@ import RecipeService from '@/recipes/service'
 function RecipeControls({ recipe }) {
     const navigate = useNavigate();
 
-    const editRecipe = () => console.error('editRecipe not implemented');
+    const editRecipe = () => {
+        navigate(`/recipes/edit/${recipe.id}`);
+    }
 
     const deleteRecipe = async () => {
         await RecipeService.deleteRecipe(recipe.id);

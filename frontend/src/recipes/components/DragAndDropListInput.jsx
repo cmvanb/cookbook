@@ -4,7 +4,7 @@ import { dndzone } from 'solid-dnd-directive';
 import '@/recipes/components/DragAndDropListInput.css'
 
 
-function DragAndDropListInput({ label, items, setItems }) {
+function DragAndDropListInput({ type, label, items, setItems }) {
     const buttonLabel = `Add ${label.slice(0, -1).toLowerCase()}`
 
     const [count, setCount] = createSignal(items().length)
@@ -17,7 +17,7 @@ function DragAndDropListInput({ label, items, setItems }) {
 
     const addItem = () => {
         const index = count()
-        setItems([...items(), { id: index, text: `id: ${index}` }])
+        setItems([...items(), { id: index, text: '' }])
         setCount(count() + 1)
     }
 
@@ -36,6 +36,7 @@ function DragAndDropListInput({ label, items, setItems }) {
                 class='dnd-border'
                 use:dndzone={{
                     items,
+                    type,
                     dropTargetStyle: {
                         outline: 'var(--primary) solid 1px',
                     },

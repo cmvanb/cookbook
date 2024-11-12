@@ -116,13 +116,20 @@ def update(
     session: SessionDep,
     current_user: CurrentUserDep,
     recipe_id: int,
-    body: RecipeBase,
+    data: RecipeBase = Form(...),
+    file: Optional[UploadFile] = None,
 ):
+    image_url = None
+    if file:
+        image_url = file.filename
+        # TODO: Store file.
+
     recipe = update_recipe(
         session=session,
         user_id=current_user.id,
         recipe_id=recipe_id,
-        params=body,
+        params=data,
+        image_url=image_url,
     )
 
     if recipe is None:

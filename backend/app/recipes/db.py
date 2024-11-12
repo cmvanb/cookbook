@@ -95,6 +95,7 @@ def update_recipe(*,
     recipe_id: int,
     user_id: int,
     params: RecipeBase,
+    image_url: str | None = None,
 ) -> DbRecipe | None:
     """ Update an eisting recipe. """
 
@@ -108,6 +109,7 @@ def update_recipe(*,
         raise KeyError('Recipe not found')
 
     schema = parse_pydantic_schema(params)
+    schema['image_url'] = image_url
 
     for key, value in schema.items():
         setattr(recipe, key, value)

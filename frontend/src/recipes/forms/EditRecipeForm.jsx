@@ -10,7 +10,7 @@ import { constants as vc, validate_all } from '@/core/validation'
 import RecipeService from '@/recipes/service'
 import DragAndDropListInput from '../components/DragAndDropListInput'
 
-function AddRecipeForm() {
+function EditRecipeForm({ recipe }) {
     const navigate = useNavigate()
 
     const [serverError, setServerError] = createSignal({
@@ -18,8 +18,18 @@ function AddRecipeForm() {
         renderHelp: null,
         detail: null,
     })
-    const [ingredients, setIngredients] = createSignal([])
-    const [instructions, setInstructions] = createSignal([])
+    const [ingredients, setIngredients] = createSignal(
+        recipe.ingredients.map((ingredient, index) => ({
+            id: index,
+            text: ingredient.text,
+        }))
+    )
+    const [instructions, setInstructions] = createSignal(
+        recipe.instructions.map((instruction, index) => ({
+            id: index,
+            text: instruction.text,
+        }))
+    )
 
     const { files, selectFiles } = createFileUploader()
 
@@ -37,7 +47,7 @@ function AddRecipeForm() {
             ...data,
         }
 
-        const response = await RecipeService.createRecipe(data)
+        const response = await RecipeService.updateRecipe(recipe.id, data)
 
         setServerError({ message: null, renderHelp: null, detail: null })
         navigate(`/recipes/${response.id}`)
@@ -58,6 +68,16 @@ function AddRecipeForm() {
     }
 
     const { form, errors } = createForm({
+        initialValues: {
+            title: recipe.title,
+            author: recipe.author,
+            description: recipe.description,
+            source_url: recipe.source_url,
+            servings: recipe.servings,
+            prep_time: recipe.prep_time,
+            cook_time: recipe.cook_time,
+            is_public: recipe.is_public
+        },
         onSubmit: handleSubmit,
         onError: handleError,
         extend: [reporter],
@@ -185,12 +205,14 @@ function AddRecipeForm() {
             />
             <DragAndDropListInput
                 id='ingredients'
+                type='ingredients'
                 label='Ingredients'
                 items={ingredients}
                 setItems={setIngredients}
             />
             <DragAndDropListInput
                 id='instructions'
+                type='instructions'
                 label='Instructions'
                 items={instructions}
                 setItems={setInstructions}
@@ -230,4 +252,4 @@ function AddRecipeForm() {
     )
 }
 
-export default AddRecipeForm
+export default EditRecipeForm
