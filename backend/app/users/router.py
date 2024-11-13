@@ -1,6 +1,7 @@
 import os
 import uuid
 from typing import Any
+from PIL import Image
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from sqlalchemy import select, func
@@ -17,6 +18,7 @@ from app.users.models import (
     DbUser, DbUserUpload, UserPublic, UsersPublic, UserCreate, UserRegister,
     UserUpdateMe, UserUpdatePassword, UserUpload,
 )
+from app.users.utils import validate_uploaded_image
 
 
 # TODO: Password recovery.
@@ -124,17 +126,26 @@ async def upload_image(
     current_user: CurrentUserDep,
     file: UploadFile,
 ):
-    uploads_count = session.query(DbUserUpload).filter(DbUserUpload.user_id == current_user.id).count()
+    original_name = file.filename or ''
 
+    uploads_count = session.query(DbUserUpload).filter(DbUserUpload.user_id == current_user.id).count()
     if uploads_count >= settings.USER_MAX_UPLOADS:
         raise HTTPException(
             status_code=400,
             detail='User has reached maximum number of uploads',
         )
 
+    error = validate_uploaded_image(file)
+    if error:
+        raise HTTPException(
+            status_code=400,
+            detail=error,
+        )
+
+    # TODO: Automatically scale down large images.
+
     uploads_count += 1
     file_name = str(uuid.uuid4())
-    original_name = file.filename or f'user_upload_{uploads_count}.png'
     file_path = os.path.join(settings.UPLOADS_PATH, file_name)
 
     try:

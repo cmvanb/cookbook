@@ -51,4 +51,12 @@ class Settings(BaseSettings):
 
     USER_MAX_UPLOADS: int = 1000
 
+    # NOTE: 5 MiB
+    USER_MAX_UPLOAD_SIZE: int = 1024 * 1024 * 5
+
+    USER_IMAGE_MIN_WIDTH: int = 640
+    USER_IMAGE_MIN_HEIGHT: int = 640
+    USER_IMAGE_MAX_WIDTH: int = 4096
+    USER_IMAGE_MAX_HEIGHT: int = 4096
+
 settings = Settings()
