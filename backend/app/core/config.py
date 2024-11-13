@@ -43,8 +43,12 @@ class Settings(BaseSettings):
 
     DATABASE_PATH: str = ''
 
+    UPLOADS_PATH: str = 'uploads'
+
     FIRST_SUPERUSER_EMAIL: str = ''
 
     FIRST_SUPERUSER_PASSWORD: str = ''
+
+    USER_MAX_UPLOADS: int = 1000
 
 settings = Settings()

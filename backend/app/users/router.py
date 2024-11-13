@@ -1,16 +1,21 @@
+import os
+import uuid
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from sqlalchemy import select, func
 
 from app.auth.utils import CurrentUserDep, get_current_active_superuser
+from app.core.config import settings
 from app.core.db import SessionDep
 from app.core.models import Message
 from app.core.security import get_password_hash, verify_password
-from app.users.db import create_user, get_user_by_email
+from app.users.db import (
+    create_user, get_user_by_email, user_upload_file, user_delete_upload
+)
 from app.users.models import (
-    DbUser, UserPublic, UsersPublic, UserCreate, UserRegister,
-    UserUpdateMe, UserUpdatePassword
+    DbUser, DbUserUpload, UserPublic, UsersPublic, UserCreate, UserRegister,
+    UserUpdateMe, UserUpdatePassword, UserUpload,
 )
 
 
@@ -111,3 +116,64 @@ def update_password(
     session.commit()
 
     return Message(message='Password updated successfully')
+
+
+@router.post('/upload-image', response_model=UserUpload)
+async def upload_image(
+    session: SessionDep,
+    current_user: CurrentUserDep,
+    file: UploadFile,
+):
+    uploads_count = session.query(DbUserUpload).filter(DbUserUpload.user_id == current_user.id).count()
+
+    if uploads_count >= settings.USER_MAX_UPLOADS:
+        raise HTTPException(
+            status_code=400,
+            detail='User has reached maximum number of uploads',
+        )
+
+    uploads_count += 1
+    file_name = str(uuid.uuid4())
+    original_name = file.filename or f'user_upload_{uploads_count}.png'
+    file_path = os.path.join(settings.UPLOADS_PATH, file_name)
+
+    try:
+        with open(file_path, 'wb') as f:
+            f.write(await file.read())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    upload = user_upload_file(
+        session=session,
+        user_id=current_user.id,
+        file_name=file_name,
+        original_name=original_name,
+    )
+
+    return UserUpload(
+        file_name=upload.file_name,
+        original_name=upload.original_name,
+        uploads_count=uploads_count,
+    )
+
+@router.delete('/delete-image/{file_name}')
+def delete_image(
+    session: SessionDep,
+    current_user: CurrentUserDep,
+    file_name: str
+):
+    try:
+        user_delete_upload(
+            session=session,
+            user_id=current_user.id,
+            file_name=file_name,
+        )
+    except KeyError:
+        raise HTTPException(status_code=404, detail='Upload not found')
+
+    file_path = os.path.join(settings.UPLOADS_PATH, file_name)
+
+    try:
+        os.remove(file_path)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

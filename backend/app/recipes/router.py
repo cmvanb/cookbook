@@ -145,12 +145,10 @@ def delete(
     recipe_id: int,
 ):
     try:
-        recipe = delete_recipe(
+        delete_recipe(
             session=session,
             recipe_id=recipe_id,
             user_id=current_user.id,
         )
     except KeyError:
         raise HTTPException(status_code=404, detail='Recipe not found')
-
-    return recipe
